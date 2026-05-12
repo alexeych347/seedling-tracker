@@ -20,7 +20,7 @@ Three files, no framework, no bundler:
 
 - **`js/app.js`** — all logic and rendering, loaded after `database.js`. Single `State` object is the source of truth. No virtual DOM — every render function writes directly to `innerHTML`. Page navigation works by toggling `.hidden` on page `<div>`s (see `PAGE_MAP`). `localStorage` keys: `rassada_v3` (plants), `rassada_reminders` (user reminders).
 
-- **`css/style.css`** — desktop-first layout. Key design tokens in `:root`. The layout is `sidebar (188px fixed) + app-content (flex column)`. The overview page layers: sky scene → glass panels → soil cross-section → stats bar.
+- **`css/style.css`** — desktop-first layout. Key design tokens in `:root`. The layout is `sidebar (188px fixed) + app-content (flex column)`. The overview page layers: sky scene → glass panels → soil cross-section → stats bar. All weather/time data is hardcoded static HTML (no live API).
 
 ## Key data shapes
 
@@ -38,6 +38,14 @@ Plant object stored in `localStorage`:
 
 1. Add an entry to `DB` in `database.js` following the existing structure (all fields required: `name`, `emoji`, `accentColor`, `varieties{}` with at least one variety containing all variety fields).
 2. No changes needed in `app.js` or `index.html` — `DB.getAllTypes()` drives the modal and glossary dynamically.
+
+## Overview page layout constraints
+
+The sky scene (`.sky-bg`) fills remaining vertical space via `flex: 1`. The three glass panels (`.overview-panels`) are absolutely positioned inside it with a fixed grid: `250px 240px 210px`. The middle column (daylight arc) is intentionally fixed-width to prevent it from stretching.
+
+Plant cards (`.plant-info-card`) are in **normal flow** inside each `.plant-slot` column — not absolutely positioned. The card sits above the pot display (`.plant-display`) in a flex column. `.plants-section` uses `overflow: visible` so that the pot's hover animation (`translateY(-8px)`) is never clipped. Do not change this back to `overflow: hidden`.
+
+The sky scene is hardcoded as **nighttime** (Moscow, ~01:00 MSK): dark gradient with star dots baked into `background-image`, `.moon-anim` CSS crescent, dark clouds. If updating to daytime, swap `.moon-anim` back to `.sun-anim` in HTML and CSS, restore the day gradient, and restore white cloud color.
 
 ## Notification system
 
