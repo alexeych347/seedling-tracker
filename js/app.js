@@ -57,6 +57,10 @@ function waterStatus(plant) {
 }
 
 function currentStage(plant) {
+  if (plant.stage !== undefined) {
+    const v = DB.getVariety(plant.typeKey, plant.varietyKey);
+    return Math.min(plant.stage, v.stages.length - 1);
+  }
   const v = DB.getVariety(plant.typeKey, plant.varietyKey);
   const d = daysSince(plant.plantedAt);
   let s = 0;
@@ -90,7 +94,7 @@ const POT_COLORS = [
 const SOIL_COLOR = '#3A1C08';
 
 function plantSVG(stage, typeKey) {
-  const FRUITS = { tomato:'🍅', cucumber:'🥒', pepper:'🌶️', basil:'🌿', eggplant:'🍆', cabbage:'🥬', zucchini:'🥒', pumpkin:'🎃' };
+  const FRUITS = { tomato:'🍅', cucumber:'🥒', pepper:'🌶️', basil:'🌿', eggplant:'🍆', cabbage:'🥬', zucchini:'🥒' };
 
   if (stage === 0) return '';
 
@@ -240,7 +244,7 @@ function openDetail(id) {
 
   // Dim other pots on windowsill
   document.querySelectorAll('.pot-wrap').forEach(el => {
-    if (Number(el.dataset.id) !== id) el.classList.add('dimmed');
+    if (el.dataset.id !== String(id)) el.classList.add('dimmed');
   });
 
   setTimeout(() => {
@@ -301,7 +305,7 @@ function renderDetail(plant) {
       <div class="water-headline">${waterHead}</div>
       <div class="water-sub">${waterSub}</div>
     </div>
-    <button class="btn-water" onclick="waterPlant(${plant.id})">Полил 💧</button>`;
+    <button class="btn-water">Полил 💧</button>`;
 
   // Light card
   document.getElementById('lightCard').innerHTML = `
@@ -337,7 +341,7 @@ function renderDetail(plant) {
   const actionEl = document.getElementById('actionArea');
   if (stage < v.stages.length - 1) {
     actionEl.innerHTML = `
-      <button class="btn-advance" onclick="advanceStage(${plant.id})">
+      <button class="btn-advance">
         Следующий этап: «${v.stages[stage + 1]}» →
       </button>`;
   } else {
@@ -383,10 +387,7 @@ function advanceStage(id) {
   const v     = DB.getVariety(plant.typeKey, plant.varietyKey);
   const stage = currentStage(plant);
   if (stage >= v.stages.length - 1) return;
-
-  // Move plantedAt back so daysSince hits next threshold
-  const nextDays = v.stageDays[stage + 1];
-  plant.plantedAt = new Date(Date.now() - nextDays * 86_400_000).toISOString();
+  plant.stage = stage + 1;
   saveState();
   renderWindowsill();
   renderDetail(plant);
@@ -432,7 +433,7 @@ function renderPlantTypeGrid() {
   const grid = document.getElementById('plantTypeGrid');
   grid.innerHTML = DB.getAllTypes().map(t => `
     <button class="plant-type-btn ${State.modal.typeKey === t.key ? 'selected' : ''}"
-            onclick="selectType('${t.key}')">
+            data-type-key="${t.key}">
       <span class="plant-type-emoji">${t.emoji}</span>
       <span class="plant-type-name">${t.name}</span>
     </button>`).join('');
@@ -452,7 +453,7 @@ function renderVarietyList() {
   const list = document.getElementById('varietyList');
   list.innerHTML = DB.getVarietyList(State.modal.typeKey).map(v => `
     <button class="variety-btn ${State.modal.varietyKey === v.key ? 'selected' : ''}"
-            onclick="selectVariety('${v.key}')">
+            data-variety-key="${v.key}">
       <span class="variety-emoji">${v.emoji}</span>
       <div class="variety-info">
         <div class="variety-name">${v.name}</div>
@@ -481,11 +482,12 @@ function goBackToStep1() {
 function confirmAdd() {
   if (!State.modal.typeKey || !State.modal.varietyKey) return;
 
+  const [y, m, d] = document.getElementById('fDate').value.split('-').map(Number);
   const plant = {
-    id:         Date.now(),
-    typeKey:    State.modal.typeKey,
-    varietyKey: State.modal.varietyKey,
-    plantedAt:  new Date(document.getElementById('fDate').value).toISOString(),
+    id:          crypto.randomUUID(),
+    typeKey:     State.modal.typeKey,
+    varietyKey:  State.modal.varietyKey,
+    plantedAt:   new Date(y, m - 1, d).toISOString(),
     lastWatered: null,
   };
   State.plants.push(plant);
@@ -573,6 +575,32 @@ function init() {
     }
     updateDateDisplay();
   }, 60_000);
+
+  // Static buttons
+  document.getElementById('backBtn').addEventListener('click', closeDetail);
+  document.getElementById('deleteBtnTop').addEventListener('click', deletePlant);
+  document.getElementById('deleteBtnBottom').addEventListener('click', deletePlant);
+  document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+  document.getElementById('modalBackBtn').addEventListener('click', goBackToStep1);
+  document.getElementById('confirmBtn').addEventListener('click', confirmAdd);
+
+  // Event delegation: plant type grid
+  document.getElementById('plantTypeGrid').addEventListener('click', e => {
+    const btn = e.target.closest('[data-type-key]');
+    if (btn) selectType(btn.dataset.typeKey);
+  });
+
+  // Event delegation: variety list
+  document.getElementById('varietyList').addEventListener('click', e => {
+    const btn = e.target.closest('[data-variety-key]');
+    if (btn) selectVariety(btn.dataset.varietyKey);
+  });
+
+  // Event delegation: detail body (water + advance)
+  document.getElementById('detailBody').addEventListener('click', e => {
+    if (e.target.closest('.btn-water'))   waterPlant(State.selectedId);
+    if (e.target.closest('.btn-advance')) advanceStage(State.selectedId);
+  });
 
   // Close modal on overlay click
   document.getElementById('addModalOverlay').addEventListener('click', e => {

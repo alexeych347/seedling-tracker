@@ -67,11 +67,11 @@
 
   <!-- Top navigation bar -->
   <div class="detail-topbar">
-    <button class="back-btn" onclick="closeDetail()">
+    <button class="back-btn" id="backBtn">
       <span class="back-arrow">←</span>
       Мой подоконник
     </button>
-    <button class="delete-btn" onclick="deletePlant()">Удалить</button>
+    <button class="delete-btn" id="deleteBtnTop">Удалить</button>
   </div>
 
   <!-- Hero: big pot + plant info -->
@@ -111,7 +111,7 @@
     <!-- Advance stage / done banner -->
     <div id="actionArea"></div>
 
-    <button class="btn-delete-plant" onclick="deletePlant()">🗑 Удалить этот горшочек</button>
+    <button class="btn-delete-plant" id="deleteBtnBottom">🗑 Удалить этот горшочек</button>
 
   </div>
 </div><!-- /#detailView -->
@@ -127,7 +127,7 @@
 
     <div class="modal-header">
       <h3 class="modal-title">Новый горшочек 🪴</h3>
-      <button class="modal-close" onclick="closeModal()" aria-label="Закрыть">✕</button>
+      <button class="modal-close" id="modalCloseBtn" aria-label="Закрыть">✕</button>
     </div>
 
     <div class="modal-body">
@@ -144,7 +144,7 @@
 
       <!-- Step 2: choose variety + date -->
       <div id="modalStep2" class="hidden">
-        <button class="modal-back-btn" onclick="goBackToStep1()">← Назад</button>
+        <button class="modal-back-btn" id="modalBackBtn">← Назад</button>
         <div class="step-indicator">
           <div class="step-dot done" style="background:var(--green-lt)"></div>
           <div class="step-dot active"></div>
@@ -158,7 +158,7 @@
           <input class="form-input" type="date" id="fDate">
         </div>
 
-        <button class="btn-primary" id="confirmBtn" onclick="confirmAdd()" disabled>
+        <button class="btn-primary" id="confirmBtn" disabled>
           Посадить! 🌱
         </button>
       </div>
