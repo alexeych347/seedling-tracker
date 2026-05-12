@@ -314,15 +314,31 @@ button { cursor: pointer; font-family: var(--font); }
 .sky-scene-inner {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg,
-    #0A2A6E 0%,
-    #1560C0 22%,
-    #2E8ED6 42%,
-    #64B8EA 58%,
-    #98D4F4 70%,
-    #BAE8D0 82%,
-    #88CC46 92%,
-    #50A820 100%);
+  background:
+    radial-gradient(1.5px 1.5px at  8%  8%, rgba(255,255,255,0.80) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 22%  4%, rgba(255,255,255,0.65) 0%, transparent 100%),
+    radial-gradient(2px   2px   at 34% 12%, rgba(255,255,255,0.50) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 44%  3%, rgba(255,255,255,0.75) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 56% 16%, rgba(255,255,255,0.60) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 62%  7%, rgba(255,255,255,0.70) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 72%  2%, rgba(255,255,255,0.80) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 80% 11%, rgba(255,255,255,0.60) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 88%  6%, rgba(255,255,255,0.70) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 14% 22%, rgba(255,255,255,0.50) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 38% 26%, rgba(255,255,255,0.40) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 66% 20%, rgba(255,255,255,0.55) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 92% 18%, rgba(255,255,255,0.45) 0%, transparent 100%),
+    radial-gradient(2px   2px   at  4% 30%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 50% 28%, rgba(255,255,255,0.45) 0%, transparent 100%),
+    linear-gradient(180deg,
+      #010818 0%,
+      #030F2E 18%,
+      #071840 38%,
+      #0C2250 58%,
+      #112838 74%,
+      #162E1A 87%,
+      #182A08 94%,
+      #1C2C0A 100%);
   overflow: hidden;
 }
 
@@ -330,8 +346,8 @@ button { cursor: pointer; font-family: var(--font); }
 .cloud {
   position: absolute;
   border-radius: 999px;
-  background: rgba(255,255,255,0.92);
-  box-shadow: 0 4px 20px rgba(255,255,255,0.3);
+  background: rgba(30,50,100,0.35);
+  box-shadow: 0 2px 12px rgba(10,20,60,0.25);
 }
 .cloud::before, .cloud::after {
   content: '';
@@ -340,23 +356,31 @@ button { cursor: pointer; font-family: var(--font); }
   border-radius: 50%;
 }
 
-/* Animated sun */
-.sun-anim {
+/* Moon (nighttime) */
+.moon-anim {
   position: absolute;
-  width: 58px; height: 58px;
+  width: 48px; height: 48px;
   border-radius: 50%;
-  background: radial-gradient(circle at 38% 38%, #FFFDE7, #FFD54F 50%, #FFAB00);
+  background: radial-gradient(circle at 38% 36%, #FEFCE8, #EDE5B0 55%, #D4C87A);
   box-shadow:
-    0 0 0 12px rgba(255,213,79,0.18),
-    0 0 0 28px rgba(255,200,50,0.10),
-    0 0 0 54px rgba(255,180,0,0.05),
-    0 0 80px rgba(255,200,0,0.22);
-  animation: sunPulse 5s ease-in-out infinite;
-  top: 14%; right: 14%;
+    0 0 0 6px  rgba(240,232,160,0.12),
+    0 0 0 16px rgba(240,232,160,0.07),
+    0 0 30px   rgba(240,232,160,0.18);
+  animation: moonPulse 7s ease-in-out infinite;
+  top: 14%; right: 18%;
+  overflow: hidden;
 }
-@keyframes sunPulse {
-  0%,100% { box-shadow: 0 0 0 12px rgba(255,213,79,0.18),0 0 0 28px rgba(255,200,50,0.10),0 0 0 54px rgba(255,180,0,0.05); }
-  50%      { box-shadow: 0 0 0 18px rgba(255,213,79,0.22),0 0 0 40px rgba(255,200,50,0.12),0 0 0 72px rgba(255,180,0,0.06); }
+.moon-anim::after {
+  content: '';
+  position: absolute;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: #071840;
+  top: 1px; right: -11px;
+}
+@keyframes moonPulse {
+  0%,100% { box-shadow: 0 0 0 6px rgba(240,232,160,0.12),0 0 0 16px rgba(240,232,160,0.07),0 0 30px rgba(240,232,160,0.18); }
+  50%      { box-shadow: 0 0 0 9px rgba(240,232,160,0.16),0 0 0 22px rgba(240,232,160,0.09),0 0 44px rgba(240,232,160,0.22); }
 }
 
 /* Garden hills (injected by JS) */
@@ -386,7 +410,7 @@ button { cursor: pointer; font-family: var(--font); }
   position: absolute;
   top: 12px; left: 12px; right: 12px;
   display: grid;
-  grid-template-columns: 250px 1fr 210px;
+  grid-template-columns: 250px 240px 210px;
   gap: 10px;
   z-index: 5;
 }
@@ -500,7 +524,7 @@ button { cursor: pointer; font-family: var(--font); }
 
 /* ── Plants section (soil) ────────────────────────────────────────────────── */
 .plants-section {
-  height: 250px;
+  height: 420px;
   flex-shrink: 0;
   position: relative;
   background: linear-gradient(180deg,
@@ -509,7 +533,7 @@ button { cursor: pointer; font-family: var(--font); }
     #2A1608 20%,
     #1A0C04 55%,
     #100800 100%);
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* The soil surface ridge at the top of the soil area */
@@ -578,33 +602,29 @@ button { cursor: pointer; font-family: var(--font); }
   cursor: pointer;
 }
 
-/* Info card above plant */
+/* Info card above plant — normal flow (not absolute), clipping fixed */
 .plant-info-card {
-  position: absolute;
-  bottom: calc(100% - 20px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 148px;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.6);
+  width: 152px;
+  background: rgba(255,255,255,0.93);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.65);
   border-radius: var(--r-sm);
-  padding: 9px 11px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.22);
+  padding: 9px 11px 8px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.20);
   pointer-events: none;
-  transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s;
-  z-index: 10;
+  margin-bottom: 10px;
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s;
 }
 .plant-slot:hover .plant-info-card {
-  transform: translateX(-50%) translateY(-6px);
-  box-shadow: 0 12px 36px rgba(0,0,0,0.28);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.30);
+  border-color: rgba(255,255,255,0.9);
 }
-.pic-top {
+.pic-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .pic-name {
   font-size: 0.76rem;
@@ -621,32 +641,48 @@ button { cursor: pointer; font-family: var(--font); }
 .pic-dot.warn { background: #F59E0B; }
 .pic-dot.bad  { background: #EF4444; animation: dotPulse 1.2s ease-in-out infinite; }
 .pic-variety {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 500;
   color: var(--text-muted);
-  margin-bottom: 6px;
+  margin-bottom: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.pic-stats {
-  display: flex;
-  gap: 6px;
-  padding-top: 5px;
-  border-top: 1px solid var(--border-lt);
-  margin-bottom: 4px;
-}
-.pic-stat {
+.pic-water-bar {
   display: flex;
   align-items: center;
-  gap: 3px;
-  font-size: 0.64rem;
-  font-weight: 600;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+.pic-water-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(0,0,0,0.10);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+.pic-water-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  transition: width 0.5s var(--ease);
+}
+.pic-water-fill.ok   { background: #1E88E5; }
+.pic-water-fill.warn { background: #FF8C00; }
+.pic-water-fill.bad  { background: #D32F2F; }
+.pic-wlabel {
+  font-size: 0.62rem;
+  font-weight: 700;
   color: var(--text-sub);
+  flex-shrink: 0;
 }
-.pic-stat-icon { font-size: 0.72rem; }
-.pic-water-row {
-  font-size: 0.64rem;
+.pic-next {
+  font-size: 0.63rem;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.pic-water-row strong { color: var(--text-sub); }
 
 /* Water bar beside plant */
 .plant-display {

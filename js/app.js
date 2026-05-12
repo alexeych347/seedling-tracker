@@ -441,19 +441,20 @@ function renderPlantsSection() {
     const stage = currentStage(plant);
 
     slot.innerHTML = `
-      <!-- Floating info card -->
+      <!-- Info card (normal flow — no clipping) -->
       <div class="plant-info-card">
-        <div class="pic-top">
+        <div class="pic-header">
           <div class="pic-name">${type.name}</div>
           <div class="pic-dot ${ws}"></div>
         </div>
-        <div class="pic-variety">${v.name}</div>
-        <div class="pic-stats">
-          <div class="pic-stat"><span class="pic-stat-icon">🌡️</span>22°C</div>
-          <div class="pic-stat"><span class="pic-stat-icon">💧</span>${pct}%</div>
-          <div class="pic-stat"><span class="pic-stat-icon">${ws === 'ok' ? '✅' : ws === 'warn' ? '⚠️' : '🆘'}</span>${ws === 'ok' ? 'Хорошо' : ws === 'warn' ? 'Скоро' : 'Полить!'}</div>
+        <div class="pic-variety">${v.name} · Этап ${stage + 1}</div>
+        <div class="pic-water-bar">
+          <div class="pic-water-track">
+            <div class="pic-water-fill ${ws}" style="width:${pct}%"></div>
+          </div>
+          <span class="pic-wlabel">${pct}%</span>
         </div>
-        <div class="pic-water-row">Следующий полив: <strong>${nextWater}</strong></div>
+        <div class="pic-next">💧 ${nextWater}</div>
       </div>
 
       <!-- Display: water bar + pot -->
