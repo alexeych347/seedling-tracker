@@ -103,6 +103,15 @@
     <!-- Sky backdrop -->
     <div class="sky-bg" id="skyBg">
       <div class="sky-scene-inner" id="skyScene">
+        <!-- Mountain silhouettes — behind moon, clouds, trees -->
+        <svg class="mountains-layer" viewBox="0 0 1400 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Far range (lighter, warm glow visible above) -->
+          <path d="M0,200 L0,118 L55,82 L130,104 L240,52 L370,88 L500,38 L640,82 L760,50 L880,78 L990,36 L1110,70 L1220,44 L1330,66 L1400,54 L1400,200 Z"
+                fill="rgba(8,28,14,0.72)"/>
+          <!-- Near range (solid, dark green-black) -->
+          <path d="M0,200 L0,142 L75,128 L170,138 L300,100 L440,132 L590,84 L740,128 L855,104 L985,130 L1110,96 L1255,126 L1360,110 L1400,118 L1400,200 Z"
+                fill="rgba(3,14,6,0.96)"/>
+        </svg>
         <div class="moon-anim" id="sunAnim"></div>
       </div>
 

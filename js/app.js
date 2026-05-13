@@ -184,6 +184,23 @@ function buildPotSVG(plant, size = 92) {
 </svg>`;
 }
 
+function buildRootSVG(w = 86) {
+  const h = 54;
+  return `<svg class="root-svg" width="${w}" height="${h}"
+    viewBox="0 0 86 54" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <line x1="43" y1="0"  x2="43" y2="38" stroke="#7A4820" stroke-width="2.8" stroke-linecap="round" opacity="0.80"/>
+    <line x1="43" y1="11" x2="21" y2="30" stroke="#6B3E18" stroke-width="1.9" stroke-linecap="round" opacity="0.70"/>
+    <line x1="43" y1="11" x2="65" y2="30" stroke="#6B3E18" stroke-width="1.9" stroke-linecap="round" opacity="0.70"/>
+    <line x1="43" y1="23" x2="11" y2="46" stroke="#5C3414" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
+    <line x1="43" y1="23" x2="75" y2="46" stroke="#5C3414" stroke-width="1.4" stroke-linecap="round" opacity="0.55"/>
+    <line x1="21" y1="30" x2="7"  y2="42" stroke="#4E2C10" stroke-width="1.0" stroke-linecap="round" opacity="0.42"/>
+    <line x1="21" y1="30" x2="29" y2="44" stroke="#4E2C10" stroke-width="1.0" stroke-linecap="round" opacity="0.42"/>
+    <line x1="65" y1="30" x2="57" y2="44" stroke="#4E2C10" stroke-width="1.0" stroke-linecap="round" opacity="0.42"/>
+    <line x1="65" y1="30" x2="79" y2="42" stroke="#4E2C10" stroke-width="1.0" stroke-linecap="round" opacity="0.42"/>
+    <line x1="43" y1="38" x2="43" y2="52" stroke="#3E2208" stroke-width="0.9" stroke-linecap="round" opacity="0.30"/>
+  </svg>`;
+}
+
 function plantSVG(stage, typeKey) {
   const FRUITS = {
     tomato: '🍅', cucumber: '🥒', pepper: '🌶️',
@@ -261,22 +278,13 @@ function buildSky() {
     sky.appendChild(el);
   });
 
+  // Hills replaced by SVG mountains in HTML — only trees injected here
   [
-    { left: -4, width: 42, height: 88 },
-    { left: 28, width: 48, height: 66 },
-    { left: 62, width: 52, height: 96 },
-  ].forEach(cfg => {
-    const hill = document.createElement('div');
-    hill.className = 'garden-hill';
-    hill.style.cssText = `left:${cfg.left}%;width:${cfg.width}%;height:${cfg.height}px`;
-    sky.appendChild(hill);
-  });
-
-  [
-    { left: 7,  trunkH: 48, crownW: 52, crownH: 72 },
-    { left: 17, trunkH: 34, crownW: 40, crownH: 56 },
-    { left: 70, trunkH: 58, crownW: 62, crownH: 88 },
-    { left: 80, trunkH: 38, crownW: 46, crownH: 64 },
+    { left: 4,  trunkH: 56, crownW: 60, crownH: 90 },
+    { left: 14, trunkH: 38, crownW: 46, crownH: 64 },
+    { left: 67, trunkH: 66, crownW: 70, crownH: 100 },
+    { left: 77, trunkH: 42, crownW: 52, crownH: 72 },
+    { left: 88, trunkH: 30, crownW: 36, crownH: 52 },
   ].forEach(cfg => {
     const tree = document.createElement('div');
     tree.className = 'tree';
@@ -467,6 +475,7 @@ function renderPlantsSection() {
         </div>
         <div class="pot-wrap-soil">
           ${buildPotSVG(plant, 86)}
+          ${buildRootSVG(86)}
         </div>
       </div>`;
 
