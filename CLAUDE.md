@@ -4,13 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Running the app
 
-No build step — open `index.html` directly in a browser:
+No build step — open `index.html` (app) or `landing.html` (marketing page) directly in a browser:
 
 ```powershell
 Start-Process index.html
 ```
 
 There are no tests, no package manager, and no dev server. All changes are visible immediately on page reload.
+
+## Pages
+
+- **`index.html`** — the actual app (plant tracker). Dark night-sky aesthetic.
+- **`landing.html`** — marketing landing page in **light** aesthetic. Self-contained: all CSS inline in `<style>`, no external JS. Nav anchors (`#how`, `#benefits`, `#ai`, `#voices`, `#pricing`) use `scroll-behavior: smooth` with `scroll-margin-top: 90px` to clear the sticky header. CTAs route as follows: "Начать бесплатно" → `index.html`; "Войти" and all `.plan-cta` buttons → `in-development.html`. All other interactive elements (brand link, footer links, price-toggle, "Подписаться", testimonials) are non-clickable via an injected CSS block before `</style>` — do not remove that block.
+- **`in-development.html`** — stub page used for unimplemented features. Same light palette as landing.
 
 ## Architecture
 

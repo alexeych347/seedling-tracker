@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440, initial-scale=1">
+<title>Страница в работе — Мой подоконник</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-deep:       #F6F2E8;
+  --bg-mid:        #F0EBD8;
+  --text:          #1A2434;
+  --text-dim:      rgba(26,36,52,0.70);
+  --text-mute:     rgba(26,36,52,0.48);
+  --green-lt:      #2EAD66;
+  --green-mid:     #228B52;
+  --green-deep:    #16633A;
+  --amber:         #E89A2C;
+  --border-soft:   rgba(26,36,52,0.10);
+  --border-strong: rgba(26,36,52,0.18);
+  --r-pill:        999px;
+  --r-lg:          28px;
+  --font: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+}
+
+html, body {
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bg-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(46,173,102,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 20% 35%, rgba(244,185,90,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 70%, rgba(42,120,199,0.05) 0%, transparent 60%),
+    linear-gradient(180deg, #FAF6EC 0%, #F4EFE0 50%, #F6F2E8 100%);
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  max-width: 540px;
+  padding: 60px 48px 52px;
+  text-align: center;
+  background: #FFFFFF;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-lg);
+  box-shadow: 0 30px 60px rgba(26,36,52,0.10);
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green-lt), var(--amber), var(--green-mid));
+}
+
+.emoji {
+  font-size: 64px;
+  margin-bottom: 24px;
+  display: block;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+
+p {
+  color: var(--text-dim);
+  font-size: 1.04rem;
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0 auto 32px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 22px;
+  border-radius: var(--r-pill);
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+}
+.btn-primary {
+  background: linear-gradient(180deg, var(--green-lt), var(--green-mid));
+  color: #FFFFFF;
+  box-shadow: 0 6px 22px rgba(46,173,102,0.30);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(46,173,102,0.4); }
+.btn-ghost {
+  background: rgba(255,255,255,0.7);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+}
+.btn-ghost:hover { background: #FFFFFF; transform: translateY(-1px); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  margin-bottom: 24px;
+  border-radius: var(--r-pill);
+  background: rgba(46,173,102,0.10);
+  border: 1px solid rgba(46,173,102,0.25);
+  color: var(--green-deep);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green-lt);
+  box-shadow: 0 0 8px rgba(46,173,102,0.5);
+  animation: pulseDot 2.2s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.3); }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-scene"></div>
+
+<div class="card">
+  <span class="badge"><span class="badge-dot"></span>Скоро</span>
+  <span class="emoji">🌱</span>
+  <h1>Страница в работе</h1>
+  <p>Мы доделываем этот раздел. Загляните чуть позже&nbsp;— а пока попробуйте основное приложение.</p>
+  <div class="actions">
+    <a href="index.html" class="btn btn-primary">Открыть приложение</a>
+    <a href="landing.html" class="btn btn-ghost">На главную</a>
+  </div>
+</div>
+
+</body>
+</html>
