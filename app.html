@@ -24,6 +24,7 @@
 <!-- ═══════════════════════════════════════════════════════════════
      SIDEBAR
 ════════════════════════════════════════════════════════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 <nav class="sidebar" id="sidebar">
 
   <div class="sidebar-brand">
@@ -87,6 +88,7 @@
     </div>
     <div class="header-right">
       <div class="header-datetime" id="headerDateTime"></div>
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Меню">☰</button>
       <button class="notif-btn" id="notifBtn" aria-label="Уведомления">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -288,14 +290,37 @@
       <h2 class="page-title">Настройки</h2>
     </div>
     <div class="settings-content">
-      <div class="library-coming-soon">
-        <span>⚙️</span>
-        <p>Настройки в разработке</p>
+      <div class="settings-group-label">Данные</div>
+      <div class="settings-section">
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-item-title">Экспорт данных</div>
+            <div class="settings-item-sub">Скачать все растения и напоминания как JSON</div>
+          </div>
+          <button class="settings-btn" id="exportBtn">Скачать JSON</button>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <div class="settings-item-title">Сбросить данные</div>
+            <div class="settings-item-sub">Удалить все растения и напоминания</div>
+          </div>
+          <button class="settings-btn danger" id="resetBtn">Очистить</button>
+        </div>
       </div>
     </div>
   </div>
 
 </div><!-- /.app-content -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MOBILE BOTTOM NAV
+════════════════════════════════════════════════════════════════ -->
+<nav class="mobile-bottom-nav" id="mobileBottomNav">
+  <button class="mobile-nav-item active" data-page="overview"><span>🏠</span><span class="mobile-nav-label">Обзор</span></button>
+  <button class="mobile-nav-item" data-page="plants"><span>🌿</span><span class="mobile-nav-label">Растения</span></button>
+  <button class="mobile-nav-item" data-page="care"><span>💧</span><span class="mobile-nav-label">Уход</span></button>
+  <button class="mobile-nav-item" data-page="settings"><span>⚙️</span><span class="mobile-nav-label">Ещё</span></button>
+</nav>
 
 
 <!-- ═══════════════════════════════════════════════════════════════
@@ -345,6 +370,8 @@
 
       <div class="section-label">Сорт</div>
       <div class="card" id="varietyCard"></div>
+
+      <div id="waterHistoryCard"></div>
 
       <div id="actionArea"></div>
 

@@ -650,8 +650,8 @@ const PAGE_MAP = {
 function navigateTo(page) {
   if (State.view === 'detail') return; // stay in detail if open
 
-  // Update nav items
-  document.querySelectorAll('.nav-item').forEach(el => {
+  // Update nav items (sidebar + mobile bottom nav)
+  document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.page === page);
   });
 
@@ -773,6 +773,28 @@ function renderDetail(plant) {
     <p>${v.varietyAdvice}</p>
     <div class="growth-note" style="margin-top:10px">${v.growthNote}</div>`;
 
+  // Water history
+  const histEl = document.getElementById('waterHistoryCard');
+  if (histEl) {
+    const hist = plant.waterHistory || [];
+    if (hist.length) {
+      histEl.className = 'card water-history-card';
+      histEl.innerHTML = `
+        <div class="card-head"><span class="card-icon">📅</span>История полива</div>
+        <div class="water-history-list">
+          ${hist.slice(0, 5).map((d, i) => `
+            <div class="water-history-item">
+              <span class="water-hist-num">${i + 1}</span>
+              <span class="water-hist-date">${fmtDate(d)}</span>
+              <span class="water-hist-ago">${timeAgo(d)}</span>
+            </div>`).join('')}
+        </div>`;
+    } else {
+      histEl.className = 'water-history-card';
+      histEl.innerHTML = '';
+    }
+  }
+
   // Action
   const actionEl = document.getElementById('actionArea');
   if (stage < v.stages.length - 1) {
@@ -796,7 +818,11 @@ function renderDetail(plant) {
 function waterPlant(id) {
   const plant = State.plants.find(p => p.id === id);
   if (!plant) return;
-  plant.lastWatered = new Date().toISOString();
+  const now = new Date().toISOString();
+  if (!plant.waterHistory) plant.waterHistory = [];
+  plant.waterHistory.unshift(now);
+  if (plant.waterHistory.length > 20) plant.waterHistory.pop();
+  plant.lastWatered = now;
   saveState();
   renderPlantsSection();
   renderStats();
@@ -957,7 +983,29 @@ function init() {
   setInterval(rotateTip, 30_000);
 
   // ── Sidebar navigation ──
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+  function closeMobileSidebar() {
+    sidebar.classList.remove('mobile-open');
+    sidebarOverlay.classList.remove('visible');
+  }
+
   document.getElementById('sidebarNav').addEventListener('click', e => {
+    const btn = e.target.closest('[data-page]');
+    if (btn) { navigateTo(btn.dataset.page); closeMobileSidebar(); }
+  });
+
+  // ── Hamburger (mobile) ──
+  document.getElementById('hamburgerBtn').addEventListener('click', () => {
+    const isOpen = sidebar.classList.toggle('mobile-open');
+    sidebarOverlay.classList.toggle('visible', isOpen);
+  });
+
+  sidebarOverlay.addEventListener('click', closeMobileSidebar);
+
+  // ── Mobile bottom nav ──
+  document.getElementById('mobileBottomNav').addEventListener('click', e => {
     const btn = e.target.closest('[data-page]');
     if (btn) navigateTo(btn.dataset.page);
   });
@@ -1053,6 +1101,35 @@ function init() {
   document.getElementById('careContent').addEventListener('click', e => {
     const btn = e.target.closest('.care-water-btn');
     if (btn) waterPlant(btn.dataset.plantId);
+  });
+
+  // ── Settings ──
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const data = {
+      plants: State.plants,
+      reminders: State.reminders,
+      exportedAt: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `podokosnik-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    if (!confirm('Удалить все растения и напоминания? Это нельзя отменить.')) return;
+    State.plants = [];
+    State.reminders = [];
+    saveState();
+    saveReminders();
+    renderPlantsSection();
+    renderStats();
+    renderRemindersList();
+    renderNotifPanel();
+    navigateTo('overview');
   });
 }
 

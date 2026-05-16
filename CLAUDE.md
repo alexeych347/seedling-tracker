@@ -4,18 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Running the app
 
-No build step — open `index.html` (app) or `landing.html` (marketing page) directly in a browser:
+No build step — open `app.html` (app) or `index.html` (marketing page) directly in a browser:
 
 ```powershell
-Start-Process index.html
+Start-Process app.html
 ```
 
 There are no tests, no package manager, and no dev server. All changes are visible immediately on page reload.
 
 ## Pages
 
-- **`index.html`** — the actual app (plant tracker). Dark night-sky aesthetic.
-- **`landing.html`** — marketing landing page in **light** aesthetic. Self-contained: all CSS inline in `<style>`, no external JS. Nav anchors (`#how`, `#benefits`, `#ai`, `#voices`, `#pricing`) use `scroll-behavior: smooth` with `scroll-margin-top: 90px` to clear the sticky header. CTAs route as follows: "Начать бесплатно" → `index.html`; "Войти" and all `.plan-cta` buttons → `in-development.html`. All other interactive elements (brand link, footer links, price-toggle, "Подписаться", testimonials) are non-clickable via an injected CSS block before `</style>` — do not remove that block.
+- **`app.html`** — the actual app (plant tracker). Dark night-sky aesthetic.
+- **`index.html`** — marketing landing page in **light** aesthetic. Self-contained: all CSS inline in `<style>`, no external JS. Nav anchors (`#how`, `#benefits`, `#ai`, `#voices`, `#pricing`) use `scroll-behavior: smooth` with `scroll-margin-top: 90px` to clear the sticky header. CTAs route as follows: "Начать бесплатно" → `app.html`; "Войти" and all `.plan-cta` buttons → `in-development.html`. All other interactive elements (brand link, footer links, price-toggle, "Подписаться", testimonials) are non-clickable via an injected CSS block before `</style>` — do not remove that block.
 - **`in-development.html`** — stub page used for unimplemented features. Same light palette as landing.
 
 ## Architecture
@@ -43,7 +43,7 @@ Plant object stored in `localStorage`:
 ## Adding a new plant type
 
 1. Add an entry to `DB` in `database.js` following the existing structure (all fields required: `name`, `emoji`, `accentColor`, `varieties{}` with at least one variety containing all variety fields).
-2. No changes needed in `app.js` or `index.html` — `DB.getAllTypes()` drives the modal and glossary dynamically.
+2. No changes needed in `app.js` or `app.html` — `DB.getAllTypes()` drives the modal and glossary dynamically.
 
 ## Overview page layout constraints
 
