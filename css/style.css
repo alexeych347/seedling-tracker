@@ -1623,9 +1623,15 @@ button { cursor: pointer; font-family: var(--font); }
    MOBILE — ≤767px
 ════════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 767px) {
-  html, body { overflow: auto; height: auto; }
-  .app-body   { overflow-y: auto; height: auto; min-height: 100vh; }
-  .app-content { overflow-y: auto; }
+  /* ── Единый scroll-контейнер: body фиксирован, app-content скроллит ── */
+  html, body  { height: 100%; overflow: hidden; }
+  .app-body   { height: 100%; overflow: hidden; min-height: unset; }
+  .app-content {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+  }
 
   /* ── Sidebar ─────────────────────────────────────────────── */
   .sidebar {
@@ -1636,19 +1642,27 @@ button { cursor: pointer; font-family: var(--font); }
   .sidebar.mobile-open { left: 0; box-shadow: 4px 0 28px rgba(0,0,0,0.45); }
   .hamburger-btn { display: flex !important; }
 
-  /* Нижняя панель убрана — навигация только через боковое меню */
+  /* Нижняя панель убрана — только боковое меню */
   .mobile-bottom-nav { display: none !important; }
 
   /* ── Header ──────────────────────────────────────────────── */
   .header-datetime { display: none; }
 
-  /* ── Overview: естественная высота, не зажимать overflow ── */
-  #pageOverview { flex: none; height: auto; overflow: visible; }
+  /* ── Overview: заполняет экран, sky-bg поглощает остаток ── */
+  #pageOverview {
+    flex: none;
+    min-height: calc(100vh - 54px);
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
 
-  /* Остальные страницы: на весь экран, внутренняя прокрутка */
+  /* Остальные страницы: ровно на весь экран, прокрутка внутри */
   #pagePlants, #pageCare, #pageLibrary, #pageSettings {
     flex: none;
     height: calc(100vh - 54px);
+    min-height: 0;
     overflow: hidden;
   }
 
@@ -1658,10 +1672,13 @@ button { cursor: pointer; font-family: var(--font); }
   .plants-row-header { order: 3; border-bottom: none; border-top: 1px solid rgba(195,160,95,0.28); }
   .stats-bar       { order: 4; }
 
-  /* ── Sky: высота с запасом под панели ───────────────────── */
+  /* ── Sky: flex:1 → заполняет всё что осталось между хедером и подоконником.
+     На маленьком экране — меньше неба, на большом — больше. Минимум 120px
+     чтобы панели были видны на самых маленьких устройствах. ── */
   .sky-bg {
-    flex: none;
-    height: 188px;
+    flex: 1;
+    min-height: 120px;
+    height: auto;
     overflow: hidden;
   }
   .overview-panels {
@@ -1675,12 +1692,12 @@ button { cursor: pointer; font-family: var(--font); }
   }
   .overview-panels::-webkit-scrollbar { display: none; }
 
-  /* Панели: компактно, ограничены максимальной высотой */
+  /* Панели: компактно */
   .glass-panel {
     flex-shrink: 0;
     width: 206px;
     padding: 10px 12px;
-    max-height: 168px;
+    max-height: 164px;
     overflow: hidden;
   }
 
@@ -1701,29 +1718,24 @@ button { cursor: pointer; font-family: var(--font); }
   .dl-lbl { font-size: 0.57rem; }
 
   /* Напоминания */
-  .reminders-list { gap: 4px; margin-bottom: 6px; max-height: 88px; overflow-y: auto; }
+  .reminders-list { gap: 4px; margin-bottom: 6px; max-height: 84px; overflow-y: auto; }
   .reminder-item  { padding: 5px 8px; gap: 7px; }
   .reminder-title { font-size: 0.70rem; }
   .reminder-time  { font-size: 0.59rem; }
   .btn-add-reminder { padding: 6px 10px; font-size: 0.69rem; }
 
-  /* ── Подоконник ──────────────────────────────────────────── */
-  /* soil-plants-row = plants-section → горшки не вылезают вверх в sky-bg */
-  .plants-section { height: 280px; }
+  /* ── Подоконник: flex-shrink:0 гарантирует полную высоту на любом экране ── */
+  .plants-section  { height: 280px; flex-shrink: 0; }
   .soil-plants-row { height: 280px; gap: 10px; padding: 8px 14px; }
   .plant-card { width: 148px; padding: 8px 10px 9px; }
   .pc-pot-zone svg { transform: scale(0.93); transform-origin: bottom center; }
 
-  /* ── Кнопка «Посадить»: во всю ширину для удобства касания ── */
-  .plants-row-header { padding: 7px 14px; }
-  .btn-add-plant {
-    width: 100%;
-    justify-content: center;
-    padding: 11px 16px;
-  }
+  /* ── Кнопка «Посадить»: во всю ширину ───────────────────── */
+  .plants-row-header { padding: 7px 14px; flex-shrink: 0; }
+  .btn-add-plant { width: 100%; justify-content: center; padding: 11px 16px; }
 
-  /* ── Статистика: компактная сетка 2×2 ───────────────────── */
-  .stats-bar { height: auto; flex-wrap: wrap; padding: 8px 10px; gap: 6px; }
+  /* ── Статистика: сетка 2×2 ───────────────────────────────── */
+  .stats-bar { height: auto; flex-wrap: wrap; padding: 8px 10px; gap: 6px; flex-shrink: 0; }
   .stat-divider { display: none; }
   .stat-item {
     flex: 0 0 calc(50% - 3px);
@@ -1741,19 +1753,19 @@ button { cursor: pointer; font-family: var(--font); }
   /* ── Форма: предотвратить авто-зум в iOS ─────────────────── */
   .form-input { font-size: 16px; }
 
-  /* ── Уход: карточки на мобильном ────────────────────────── */
-  .care-plant-row { padding: 10px 14px; gap: 10px; flex-wrap: wrap; }
-  .care-plant-left { gap: 8px; }
-  .care-plant-name { font-size: 0.84rem; }
+  /* ── Уход: компактные карточки ───────────────────────────── */
+  .care-plant-row    { padding: 10px 14px; gap: 10px; flex-wrap: wrap; }
+  .care-plant-left   { gap: 8px; }
+  .care-plant-name   { font-size: 0.84rem; }
   .care-plant-variety { font-size: 0.67rem; }
   .care-status-badge { padding: 4px 10px; font-size: 0.68rem; }
-  .care-water-btn { padding: 7px 13px; font-size: 0.72rem; }
+  .care-water-btn    { padding: 7px 13px; font-size: 0.72rem; }
 
-  /* ── Библиотека/Настройки: отступы ──────────────────────── */
+  /* ── Отступы на остальных страницах ─────────────────────── */
   .glossary-content { padding: 14px 14px 28px; }
-  .care-content { padding: 14px 14px; }
+  .care-content     { padding: 14px 14px; }
   .settings-content { padding: 16px 14px; }
-  .settings-item { padding: 13px 14px; }
+  .settings-item    { padding: 13px 14px; }
 
   /* ── Детали и уведомления ────────────────────────────────── */
   .detail-sheet { width: 100%; }
