@@ -1666,6 +1666,13 @@ button { cursor: pointer; font-family: var(--font); }
   /* Plants section: shorter on mobile */
   .plants-section { height: 230px; }
 
+  /* Move add-plant button below the windowsill on mobile so it's
+     never covered by the soil-plants-row overflow (which extends upward) */
+  .sky-bg          { order: 1; }
+  .plants-section  { order: 2; }
+  .plants-row-header { order: 3; border-bottom: none; border-top: 1px solid rgba(195,160,95,0.28); }
+  .stats-bar       { order: 4; }
+
   /* Stats bar: wraps */
   .stats-bar { height: auto; flex-wrap: wrap; padding: 8px 12px; gap: 6px; }
   .stat-divider { display: none; }
