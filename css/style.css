@@ -745,7 +745,6 @@ button { cursor: pointer; font-family: var(--font); }
   color: rgba(26,36,52,0.50);
   cursor: pointer;
   flex-shrink: 0;
-  margin-bottom: 16px;
   transition: all 0.22s;
   backdrop-filter: blur(4px);
 }
