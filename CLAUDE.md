@@ -20,11 +20,13 @@ There are no tests, no package manager, and no dev server. All changes are visib
 
 ## Architecture
 
-Three files, no framework, no bundler:
+Four files, no framework, no bundler:
 
 - **`js/database.js`** — pure data, loaded first. Defines the global `DB` object with care data for **15 plant types** (48+ varieties). Each variety has `waterIntervalDays` (supports fractional values, e.g. `1.5` = 36 h), `stageDays[]`, `stageAdvice[]`, `stages[]`, and display metadata. Three helpers are attached directly to `DB`: `getVariety(typeKey, varietyKey)`, `getVarietyList(typeKey)`, `getAllTypes()`.
 
 - **`js/app.js`** — all logic and rendering, loaded after `database.js`. Single `State` object is the source of truth. No virtual DOM — every render function writes directly to `innerHTML`. Page navigation works by toggling `.hidden` on page `<div>`s (see `PAGE_MAP`). `PAGE_TITLES` maps page keys to Russian labels shown in the app header. `localStorage` keys: `rassada_v3` (plants), `rassada_reminders` (user reminders).
+
+- **`js/icons.js`** — `PLANT_ICONS` object: SVG strings keyed by `typeKey`, `viewBox="0 0 40 40"`, flat style. Used in filter chips and glossary headers. All 15 types have distinct visuals: tomato (round + 5-point star calyx), eggplant (tall narrow oval + wide flat cap), pepper (bell shape with 3-section lines), cabbage (overlapping outer leaves + pale center), basil (3 large oval leaves, dark green), parsley (3 branches with small leaflet clusters, light yellow-green).
 
 - **`css/style.css`** — desktop-first layout. Key design tokens in `:root`. The layout is `sidebar (212px fixed) + app-content (flex column)`. The overview page layers: sky scene → glass panels → windowsill (plants-section) → stats bar. Weather data is fetched live from Open-Meteo API on load and refreshed periodically.
 
@@ -60,18 +62,36 @@ Current call site in `renderPlantsSection`: `buildPotSVG(plant, 104)` — width 
 
 1. Add an entry to `DB` in `database.js` following the existing structure (all fields required: `name`, `emoji`, `accentColor`, `varieties{}` with at least one variety containing all variety fields).
 2. Add the new `typeKey` to the `FRUITS` map in `app.js` (maps typeKey → emoji string used in SVG stage-3 rendering).
-3. No other changes needed — `DB.getAllTypes()` drives the modal and glossary dynamically. The stats bar also reads `DB.getAllTypes().length` for the "из N" counter.
+3. Add an SVG icon to `PLANT_ICONS` in `js/icons.js` (`viewBox="0 0 40 40"`, flat style, visually distinct from existing icons).
+4. No other changes needed — `DB.getAllTypes()` drives the modal and glossary dynamically. The stats bar also reads `DB.getAllTypes().length` for the "из N" counter.
 
 ## Overview page layout constraints
 
 The sky scene (`.sky-bg`) fills remaining vertical space via `flex: 1`. The three glass panels (`.overview-panels`) are absolutely positioned inside it with a fixed grid: `250px 240px 210px`. The middle column (daylight arc) is intentionally fixed-width to prevent it from stretching.
 
-**Plant cards (`.plant-card`)** are a unified element inside each `.plant-slot` — they contain both the info header (name, variety, stage, water bar, next-watering label) and the pot SVG below it. There is no separate `.plant-display` or side water bar. `.plants-section` (height 360 px) uses `overflow: visible` so that the card's hover animation (`translateY(-8px)`) is never clipped. Do not change this back to `overflow: hidden`.
+**Plant cards layout** — `.soil-plants-row` is `position: absolute; bottom: 0; left: 0; right: 0; height: 342px; align-items: stretch` — all child elements (`.plant-slot` and `.add-plant-btn`) stretch to the same height. `.plant-card` has `flex: 1` so it fills its slot. `.pc-pot-zone` also has `flex: 1` with `align-items: flex-end` — the pot stays at the bottom of the card, extra space goes to the pot zone. Do not add `min-height` to `.add-plant-btn` — its height is set by the parent row.
 
-The stats bar icons (`.stat-icon`) use SVG inside a colored `34×34 px` rounded box: green for progress/collection, blue for next watering.
+**Hover animation** — `.plant-slot:hover .plant-card { transform: translateY(-8px) }`. The row has `overflow-y: hidden` (required to work alongside `overflow-x: auto` per CSS spec) and `padding-top: 10px` which gives the card 10 px of clearance to move up without being clipped.
+
+**Scrolling** — when plants exceed the visible viewport width, `.soil-plants-row` scrolls horizontally (`overflow-x: auto`). The scrollbar is styled with `scrollbar-color: rgba(255,255,255,0.40)` — light-colored to be visible on the dark wood background.
+
+**Stats bar** has 4 items: progress bar, collection count (из N, dynamic from `DB.getAllTypes().length`), next watering, and nearest readiness. Icon colors: `stat-icon--green` (progress/collection), `stat-icon--blue` (next watering), `stat-icon--amber` (nearest readiness).
+
+**Sidebar conditions** show: temperature (`sidebarTemp`), humidity (`sidebarHumidity`), and UV index (`sidebarUV`). All three are updated by `fetchWeather()` from Open-Meteo `current.uv_index`. The old hardcoded "0 лк / Освещённость" has been removed.
 
 The sky scene is hardcoded as **nighttime** (Moscow, ~01:00 MSK): dark gradient with star dots baked into `background-image`, `.moon-anim` CSS crescent, dark clouds. If updating to daytime, swap `.moon-anim` back to `.sun-anim` in HTML and CSS, restore the day gradient, and restore white cloud color.
+
+## Days-to-readiness widget
+
+`daysToFinalStage(plant)` computes days remaining until `v.stageDays[last]` from `plantedAt`. Returns `0` if the plant is already at the final stage. Used in two places:
+
+- **Plant card** — `renderPlantsSection()` renders a `.pic-harvest` line: `"🌱 Готово через X дн"` (amber) or `"✅ [final stage name]"` (green, bold) when `daysLeft === 0`.
+- **Stats bar** — `renderStats()` finds `minDaysToFinal` across all plants and writes it to `#statNearestHarvest`.
 
 ## Notification system
 
 Notifications are generated at render time from plant water status — there is no separate notification state. `generateRemindersFromPlants()` returns auto-entries; `allReminders()` merges them with user-added reminders from `State.reminders`. The badge count reflects urgency-flagged entries only.
+
+## Plants page (glossary)
+
+The page has no `<h2>` title of its own — the header already shows "Растения" via `PAGE_TITLES`. Filter chips (`.filter-chip`) are `display: inline-flex; align-items: center; height: 32px` — consistent height regardless of whether they contain an icon. Icons inside chips use `.filter-chip .glossary-type-emoji { width: 1.2rem; height: 1.2rem }` — smaller than the 1.7rem used in glossary section headers.
