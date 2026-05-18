@@ -218,6 +218,14 @@ button { cursor: pointer; font-family: var(--font); }
   margin-left: 4px;
   vertical-align: middle;
 }
+.tip-plant-label {
+  font-size: 0.60rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+  min-height: 0;
+}
 .sidebar-tip-text {
   font-size: 0.76rem;
   color: rgba(255,255,255,0.68);

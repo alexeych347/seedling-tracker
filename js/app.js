@@ -360,6 +360,7 @@ const WEATHER_API_URL = 'https://api.open-meteo.com/v1/forecast?latitude=55.75&l
   '&current=temperature_2m,relative_humidity_2m,wind_speed_10m,surface_pressure,weather_code,uv_index,apparent_temperature' +
   '&daily=sunrise,sunset,weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=Europe%2FMoscow&forecast_days=7';
 const WEATHER_CACHE_KEY = 'rassada_weather_v2';
+const WeatherState = { temp: null, humidity: null, uvIndex: 0, weatherCode: 0, isDay: false };
 const WEATHER_TTL_MS = 30 * 60 * 1000;
 
 function wmoIcon(code, isDay) {
@@ -399,6 +400,14 @@ function applyWeather(data) {
   const sunrise = new Date(daily.sunrise[0]);
   const sunset  = new Date(daily.sunset[0]);
   const isDay   = now >= sunrise && now <= sunset;
+
+  // Update shared weather state for tip rendering
+  WeatherState.temp        = Math.round(cur.temperature_2m);
+  WeatherState.humidity    = Math.round(cur.relative_humidity_2m);
+  WeatherState.uvIndex     = Math.round(cur.uv_index ?? 0);
+  WeatherState.weatherCode = cur.weather_code;
+  WeatherState.isDay       = isDay;
+  renderTip();
 
   // Sidebar
   const sT = document.getElementById('sidebarTemp');
@@ -600,21 +609,59 @@ function updateDateTime() {
   el.textContent = `${date} • ${timePart}`;
 }
 
-// ── Sidebar tips rotation ─────────────────────────────────────────────────────
-const TIPS = [
-  'Не забудьте проветрить помещение и опрыскать рассаду водой из пульверизатора.',
+// ── Sidebar tip (personalized) ────────────────────────────────────────────────
+const TIPS_GENERIC = [
   'Поливайте рассаду утром — за день корни лучше усвоят влагу.',
   'Подсветка фитолампой 12–14 часов в сутки ускоряет рост в пасмурные дни.',
   'Слегка встряхивайте растения руками — это стимулирует укрепление стебля.',
   'Следите за температурой субстрата: ниже 18 °C замедляет рост корней.',
-  'Добавляйте в воду для полива немного золы — это хороший калий-фосфорный подкорм.',
   'Слишком вытянувшаяся рассада — признак нехватки света, не перелива.',
+  'Добавляйте в воду для полива немного золы — хороший калий-фосфорный подкорм.',
+  'Проветривайте помещение и опрыскивайте рассаду из пульверизатора.',
 ];
-let tipIndex = 0;
-function rotateTip() {
-  const el = document.getElementById('sidebarTipText');
-  if (el) el.textContent = TIPS[tipIndex % TIPS.length];
-  tipIndex++;
+
+function renderTip() {
+  const el       = document.getElementById('sidebarTipText');
+  const labelEl  = document.getElementById('tipPlantLabel');
+  const emojiEl  = document.querySelector('.sidebar-tip-plant');
+  if (!el) return;
+
+  // No plants → generic daily tip
+  if (State.plants.length === 0) {
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86_400_000);
+    el.textContent = TIPS_GENERIC[dayOfYear % TIPS_GENERIC.length];
+    if (labelEl) labelEl.textContent = '';
+    if (emojiEl) emojiEl.textContent = '🌱';
+    return;
+  }
+
+  // Pick most relevant plant: urgent → warn → first
+  const sorted = [...State.plants].sort((a, b) => {
+    const ord = { bad: 0, warn: 1, ok: 2 };
+    return (ord[waterStatus(a)] ?? 2) - (ord[waterStatus(b)] ?? 2);
+  });
+  const plant = sorted[0];
+  const type  = DB[plant.typeKey];
+  const v     = DB.getVariety(plant.typeKey, plant.varietyKey);
+  const stage = currentStage(plant);
+
+  // First sentence of stageAdvice
+  const full = (v.stageAdvice?.[stage] || '').trim();
+  const dot  = full.indexOf('.');
+  const stageTip = dot > 0 && dot < 150 ? full.slice(0, dot + 1) : full.slice(0, 120) + (full.length > 120 ? '…' : '');
+
+  // Weather context (appended if conditions warrant)
+  let weatherLine = '';
+  if (WeatherState.temp !== null) {
+    if (WeatherState.temp >= 27 && WeatherState.isDay)   weatherLine = ' ☀️ Жарко — поливайте чаще.';
+    else if (WeatherState.temp <= 10)                     weatherLine = ' 🥶 Холодно — уберите от холодного стекла.';
+    else if (WeatherState.humidity > 82)                  weatherLine = ' 💦 Высокая влажность — следите за грибком.';
+    else if (WeatherState.humidity < 35)                  weatherLine = ' 💧 Сухой воздух — опрыскайте листья.';
+  }
+
+  el.textContent = stageTip + weatherLine;
+  if (labelEl) labelEl.textContent = `${type.name} ${v.name}`;
+  if (emojiEl) emojiEl.textContent = type.emoji;
 }
 
 // ── Reminders ─────────────────────────────────────────────────────────────────
@@ -1310,7 +1357,7 @@ function init() {
   loadState();
   buildSky();
   updateDateTime();
-  rotateTip();
+  renderTip();
   fetchWeather();
   renderPlantsSection();
   renderStats();
@@ -1334,8 +1381,8 @@ function init() {
     if (State.currentPage === 'care') renderCarePage();
   }, 60_000);
 
-  // Rotate tip every 30s
-  setInterval(rotateTip, 30_000);
+  // Refresh tip every 60s (re-evaluates plant state)
+  setInterval(renderTip, 60_000);
 
   // ── Sidebar navigation ──
   const sidebar = document.getElementById('sidebar');
