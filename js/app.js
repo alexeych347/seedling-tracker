@@ -403,8 +403,17 @@ function applyWeather(data) {
   // Sidebar
   const sT = document.getElementById('sidebarTemp');
   const sH = document.getElementById('sidebarHumidity');
+  const sUV = document.getElementById('sidebarUV');
   if (sT) sT.textContent = Math.round(cur.temperature_2m) + '°C';
   if (sH) sH.textContent = Math.round(cur.relative_humidity_2m) + '%';
+  if (sUV) {
+    const uv = Math.round(cur.uv_index);
+    sUV.textContent = uv <= 0 ? (isDay ? '0' : 'ночь')
+      : uv <= 2 ? `${uv} низкий`
+      : uv <= 5 ? `${uv} умерен.`
+      : uv <= 7 ? `${uv} высокий`
+      : `${uv} экстрем.`;
+  }
 
   // Eyebrow
   const eyebrow = document.getElementById('weatherEyebrow');
@@ -1222,6 +1231,10 @@ function init() {
   renderStats();
   renderRemindersList();
   renderNotifPanel();
+
+  // FAB "+" add button — always visible on windowsill
+  const fabBtn = document.getElementById('addPlantFab');
+  if (fabBtn) fabBtn.addEventListener('click', openModal);
 
   // Refresh weather every 30 min
   setInterval(fetchWeather, WEATHER_TTL_MS);
