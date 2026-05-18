@@ -555,6 +555,18 @@ button { cursor: pointer; font-family: var(--font); }
 .reminder-body { flex: 1; min-width: 0; }
 .reminder-title { font-size: 0.76rem; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .reminder-time { font-size: 0.65rem; color: var(--text-muted); }
+.reminder-delete-btn {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  border: none; background: none; padding: 0;
+  font-size: 0.65rem; color: var(--text-muted);
+  cursor: pointer; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.15s, background 0.15s;
+}
+.reminder-item:hover .reminder-delete-btn { opacity: 1; }
+.reminder-delete-btn:hover { background: #FEE2E2; color: #EF4444; }
+
 .reminder-done {
   width: 18px; height: 18px;
   border-radius: 50%;

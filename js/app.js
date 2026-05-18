@@ -805,6 +805,7 @@ function renderRemindersList() {
         <div class="reminder-title">${r.text}</div>
         <div class="reminder-time">${r.time}</div>
       </div>
+      ${!r.auto ? `<button class="reminder-delete-btn" data-reminder-id="${r.id}" title="Удалить">✕</button>` : ''}
     </div>`).join('');
 
   el.innerHTML = summaryHtml + extrasHtml;
@@ -831,7 +832,9 @@ function renderNotifPanel() {
   el.innerHTML = list.map(r => {
     const actionBtn = r.auto && r.plantId
       ? `<button class="notif-action-btn" data-plant-id="${r.plantId}">${r.urgency === 'info' ? 'Открыть' : 'Полить'}</button>`
-      : '';
+      : !r.auto
+        ? `<button class="reminder-delete-btn" data-reminder-id="${r.id}" title="Удалить">✕</button>`
+        : '';
     return `
       <div class="notif-card ${r.urgency || 'info'}">
         <span class="notif-card-icon">${r.icon}</span>
@@ -1279,6 +1282,13 @@ function deletePlant() {
   closeDetail();
 }
 
+function deleteReminder(id) {
+  State.reminders = State.reminders.filter(r => r.id !== id);
+  saveReminders();
+  renderRemindersList();
+  renderNotifPanel();
+}
+
 // ── Modal ─────────────────────────────────────────────────────────────────────
 function openModal() {
   State.modal = { open: true, step: 1, typeKey: null, varietyKey: null };
@@ -1506,8 +1516,20 @@ function init() {
   document.getElementById('notifCloseBtn').addEventListener('click', closeNotifPanel);
   document.getElementById('notifBackdrop').addEventListener('click', closeNotifPanel);
 
-  // Notif panel actions (water / open)
+  // ── Reminders panel (water / delete) ──
+  document.getElementById('remindersList').addEventListener('click', e => {
+    const delBtn = e.target.closest('[data-reminder-id]');
+    if (delBtn) { deleteReminder(delBtn.dataset.reminderId); return; }
+    const btn = e.target.closest('[data-plant-id]');
+    if (btn) { waterPlant(btn.dataset.plantId); return; }
+    const allBtn = e.target.closest('[data-water-all]');
+    if (allBtn) State.plants.filter(p => waterStatus(p) === 'bad').forEach(p => waterPlant(p.id));
+  });
+
+  // ── Notif panel delete ──
   document.getElementById('notifPanelBody').addEventListener('click', e => {
+    const delBtn = e.target.closest('[data-reminder-id]');
+    if (delBtn) { deleteReminder(delBtn.dataset.reminderId); return; }
     const btn = e.target.closest('.notif-action-btn');
     if (!btn || !btn.dataset.plantId) return;
     const id = btn.dataset.plantId;
@@ -1517,14 +1539,6 @@ function init() {
     } else {
       waterPlant(id);
     }
-  });
-
-  // ── Reminders panel (water from reminder dot) ──
-  document.getElementById('remindersList').addEventListener('click', e => {
-    const btn = e.target.closest('[data-plant-id]');
-    if (btn) { waterPlant(btn.dataset.plantId); return; }
-    const allBtn = e.target.closest('[data-water-all]');
-    if (allBtn) State.plants.filter(p => waterStatus(p) === 'bad').forEach(p => waterPlant(p.id));
   });
 
   // ── Add reminder inline form ──
