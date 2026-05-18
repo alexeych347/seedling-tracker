@@ -85,6 +85,13 @@ function currentStage(plant) {
   return Math.min(s, v.stages.length - 1);
 }
 
+function daysToFinalStage(plant) {
+  const v = DB.getVariety(plant.typeKey, plant.varietyKey);
+  if (currentStage(plant) >= v.stages.length - 1) return 0;
+  const lastDay = v.stageDays[v.stageDays.length - 1];
+  return Math.max(0, lastDay - daysSince(plant.plantedAt));
+}
+
 function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
 }
@@ -679,6 +686,10 @@ function renderPlantsSection() {
 
     const nextWater = nextWaterLabel(plant);
     const stage = currentStage(plant);
+    const daysLeft = daysToFinalStage(plant);
+    const harvestLine = daysLeft === 0
+      ? `<div class="pic-harvest ready">✅ ${v.stages[v.stages.length - 1]}</div>`
+      : `<div class="pic-harvest">🌱 Готово через ${daysLeft} дн</div>`;
 
     slot.innerHTML = `
       <div class="plant-card">
@@ -694,6 +705,7 @@ function renderPlantsSection() {
           <span class="pic-wlabel">${pct}%</span>
         </div>
         <div class="pic-next">💧 ${nextWater}</div>
+        ${harvestLine}
         <div class="pc-pot-zone">
           ${buildPotSVG(plant, 104)}
         </div>
@@ -727,11 +739,14 @@ function renderStats() {
     document.getElementById('progressFill').style.width = '0%';
     document.getElementById('progressPct').textContent = '0%';
     document.getElementById('statNextWater').textContent = '—';
+    const he = document.getElementById('statNearestHarvest');
+    if (he) he.textContent = '—';
     return;
   }
 
   let totalProgress = 0;
   let minHoursUntil = Infinity;
+  let minDaysToFinal = Infinity;
 
   State.plants.forEach(plant => {
     const v     = DB.getVariety(plant.typeKey, plant.varietyKey);
@@ -745,6 +760,9 @@ function renderStats() {
       const h = hoursUntilWater(plant);
       if (h < minHoursUntil) minHoursUntil = h;
     }
+
+    const d = daysToFinalStage(plant);
+    if (d < minDaysToFinal) minDaysToFinal = d;
   });
 
   const avg = Math.round(totalProgress / count);
@@ -759,6 +777,13 @@ function renderStats() {
     document.getElementById('statNextWater').textContent = `Сегодня, через ${minHoursUntil} ч`;
   } else {
     document.getElementById('statNextWater').textContent = `Через ${Math.floor(minHoursUntil / 24)} дн`;
+  }
+
+  const harvestEl = document.getElementById('statNearestHarvest');
+  if (harvestEl) {
+    if (minDaysToFinal === 0) harvestEl.textContent = 'Готово!';
+    else if (minDaysToFinal === Infinity) harvestEl.textContent = '—';
+    else harvestEl.textContent = `Через ${minDaysToFinal} дн`;
   }
 }
 

@@ -703,6 +703,17 @@ button { cursor: pointer; font-family: var(--font); }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.pic-harvest {
+  font-size: 0.63rem;
+  color: #b87a20;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pic-harvest.ready {
+  color: var(--green-lt);
+  font-weight: 600;
+}
 
 /* Pot zone inside plant card */
 .pc-pot-zone {
@@ -807,6 +818,7 @@ button { cursor: pointer; font-family: var(--font); }
 }
 .stat-icon--green { background: linear-gradient(135deg, #3a8f50, #56b870); }
 .stat-icon--blue  { background: linear-gradient(135deg, #3478b5, #4a9fd4); }
+.stat-icon--amber { background: linear-gradient(135deg, #b87a20, #e0a830); }
 .stat-body { flex: 1; min-width: 0; }
 .stat-label { font-size: 0.62rem; color: rgba(26,36,52,0.48); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
 .stat-value { font-size: 0.88rem; font-weight: 700; color: var(--text-main); }
