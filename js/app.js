@@ -358,8 +358,8 @@ function plantSVG(stage, typeKey) {
 // ── Weather API ───────────────────────────────────────────────────────────────
 const WEATHER_API_URL = 'https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.62' +
   '&current=temperature_2m,relative_humidity_2m,wind_speed_10m,surface_pressure,weather_code,uv_index,apparent_temperature' +
-  '&daily=sunrise,sunset&hourly=temperature_2m,weather_code&timezone=Europe%2FMoscow&forecast_days=1';
-const WEATHER_CACHE_KEY = 'rassada_weather';
+  '&daily=sunrise,sunset,weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=Europe%2FMoscow&forecast_days=7';
+const WEATHER_CACHE_KEY = 'rassada_weather_v2';
 const WEATHER_TTL_MS = 30 * 60 * 1000;
 
 function wmoIcon(code, isDay) {
@@ -482,6 +482,27 @@ function applyWeather(data) {
     const h   = Math.floor(ms / 3_600_000);
     const min = Math.round((ms % 3_600_000) / 60_000);
     drEl.textContent = `${h} ч ${min} мин`;
+  }
+
+  // Weekly forecast strip
+  const wkEl = document.getElementById('weatherWeekly');
+  if (wkEl && daily.time && daily.weather_code) {
+    const todayStr = new Date().toDateString();
+    const items = daily.time.map((dateStr, i) => {
+      const d = new Date(dateStr);
+      const isToday = d.toDateString() === todayStr;
+      const dayName = isToday ? 'Сег' : d.toLocaleDateString('ru-RU', { weekday: 'short' }).replace('.', '');
+      const icon = wmoIcon(daily.weather_code[i], true);
+      const max = Math.round(daily.temperature_2m_max[i]);
+      const min = Math.round(daily.temperature_2m_min[i]);
+      return `<div class="wk-day${isToday ? ' wk-today' : ''}">
+        <div class="wk-name">${dayName}</div>
+        <div class="wk-icon">${icon}</div>
+        <div class="wk-max">${max}°</div>
+        <div class="wk-min">${min}°</div>
+      </div>`;
+    });
+    wkEl.innerHTML = items.join('');
   }
 }
 

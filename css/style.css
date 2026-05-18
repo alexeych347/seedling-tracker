@@ -478,6 +478,30 @@ button { cursor: pointer; font-family: var(--font); }
 .hr-icon { font-size: 0.9rem; line-height: 1.6; }
 .hr-temp { font-size: 0.70rem; font-weight: 700; color: var(--text-main); }
 
+/* Weekly forecast strip */
+.weather-weekly {
+  display: flex;
+  gap: 2px;
+  padding-top: 8px;
+  margin-top: 8px;
+  border-top: 1px solid var(--border-lt);
+}
+.wk-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 4px 2px;
+  border-radius: 5px;
+}
+.wk-today { background: rgba(46,173,102,0.12); }
+.wk-name { font-size: 0.57rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+.wk-today .wk-name { color: var(--green-lt); }
+.wk-icon { font-size: 0.88rem; line-height: 1.4; }
+.wk-max { font-size: 0.67rem; font-weight: 700; color: var(--text-main); }
+.wk-min { font-size: 0.60rem; color: var(--text-muted); }
+
 /* Daylight panel */
 .daylight-panel { display: flex; flex-direction: column; }
 .daylight-arc-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 4px 0; }
@@ -1703,6 +1727,7 @@ button { cursor: pointer; font-family: var(--font); }
 
   /* Погода */
   .weather-hourly { display: none; }
+  .weather-weekly { display: none; }
   .weather-main { margin-bottom: 6px; gap: 8px; }
   .weather-temp { font-size: 1.5rem; }
   .weather-desc-col { min-width: 0; }
