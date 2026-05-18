@@ -955,30 +955,85 @@ function renderStats() {
   }
 }
 
-// ── Care page ─────────────────────────────────────────────────────────────────
-function renderCarePage() {
-  const el = document.getElementById('careContent');
-  if (!el) return;
-  if (!State.plants.length) {
-    el.innerHTML = `<div class="care-empty"><span>💧</span><p>Добавьте растения, чтобы отслеживать уход</p></div>`;
-    return;
-  }
-  el.innerHTML = State.plants.map(plant => {
+// ── Journal page ──────────────────────────────────────────────────────────────
+function buildJournalEvents() {
+  const events = [];
+  State.plants.forEach(plant => {
     const type = DB[plant.typeKey];
     const v    = DB.getVariety(plant.typeKey, plant.varietyKey);
-    const ws   = waterStatus(plant);
-    const labels = { ok: '✅ Хорошо', warn: '⚠️ Скоро поливать', bad: '🚨 Нужна вода' };
-    return `
-      <div class="care-plant-row">
-        <div class="care-plant-left">
-          <span class="care-plant-emoji">${PLANT_ICONS[plant.typeKey] || type.emoji}</span>
-          <div>
-            <div class="care-plant-name">${v.fullName}</div>
-            <div class="care-plant-variety">Посеяно ${fmtDate(plant.plantedAt)} · ${daysSince(plant.plantedAt)} дн</div>
+    const label = `${type.name} ${v.name}`;
+    const emoji = type.emoji;
+
+    events.push({ iso: plant.plantedAt, kind: 'seeded', label, emoji, plantId: plant.id });
+
+    (plant.waterHistory || []).forEach(iso => {
+      events.push({ iso, kind: 'watered', label, emoji, plantId: plant.id });
+    });
+  });
+
+  events.sort((a, b) => b.iso.localeCompare(a.iso));
+  return events;
+}
+
+function journalDateLabel(dateKey) {
+  const today     = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
+  if (dateKey === today)     return 'Сегодня';
+  if (dateKey === yesterday) return 'Вчера';
+  const [y, m, d] = dateKey.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+}
+
+function renderJournal() {
+  const el = document.getElementById('journalContent');
+  if (!el) return;
+
+  if (!State.plants.length) {
+    el.innerHTML = `<div class="journal-empty"><span>📋</span><p>Добавьте растения — здесь появится история ухода</p></div>`;
+    return;
+  }
+
+  const events = buildJournalEvents();
+  if (!events.length) {
+    el.innerHTML = `<div class="journal-empty"><span>📋</span><p>Пока нет записей</p></div>`;
+    return;
+  }
+
+  // Group by date
+  const groups = {};
+  events.forEach(e => {
+    const key = e.iso.slice(0, 10);
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(e);
+  });
+
+  const kindMeta = {
+    watered: { icon: '💧', text: 'Полив' },
+    seeded:  { icon: '🌱', text: 'Посев' },
+  };
+
+  el.innerHTML = Object.entries(groups).map(([dateKey, dayEvents]) => {
+    const rows = dayEvents.map(e => {
+      const meta = kindMeta[e.kind];
+      const time = e.iso.length >= 16 ? e.iso.slice(11, 16) : '';
+      return `
+        <div class="journal-event" data-plant-id="${e.plantId}">
+          <div class="je-icon-wrap je-${e.kind}">${meta.icon}</div>
+          <div class="je-body">
+            <span class="je-action">${meta.text}</span>
+            <span class="je-plant">${e.label}</span>
           </div>
+          ${time ? `<div class="je-time">${time}</div>` : ''}
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="journal-day">
+        <div class="journal-day-header">
+          <span class="jdh-label">${journalDateLabel(dateKey)}</span>
+          <span class="jdh-count">${dayEvents.length} ${dayEvents.length === 1 ? 'запись' : dayEvents.length < 5 ? 'записи' : 'записей'}</span>
         </div>
-        <span class="care-status-badge ${ws}">${labels[ws]}</span>
-        <button class="care-water-btn" data-plant-id="${plant.id}">💧 Полить</button>
+        <div class="journal-day-events">${rows}</div>
       </div>`;
   }).join('');
 }
@@ -1063,7 +1118,7 @@ const PAGE_MAP = {
 const PAGE_TITLES = {
   overview: 'Обзор',
   plants:   'Растения',
-  care:     'Уход',
+  care:     'Журнал',
   library:  'Библиотека',
   settings: 'Настройки',
 };
@@ -1090,7 +1145,7 @@ function navigateTo(page) {
 
   // Lazy render
   if (page === 'plants') renderGlossary();
-  if (page === 'care')   renderCarePage();
+  if (page === 'care')   renderJournal();
 }
 
 // ── Detail view ───────────────────────────────────────────────────────────────
@@ -1254,7 +1309,7 @@ function waterPlant(id) {
   renderRemindersList();
   renderNotifPanel();
   if (State.view === 'detail') renderDetail(plant);
-  if (State.currentPage === 'care') renderCarePage();
+  if (State.currentPage === 'care') renderJournal();
 }
 
 function advanceStage(id) {
@@ -1464,7 +1519,7 @@ function init() {
       const p = State.plants.find(pl => pl.id === State.selectedId);
       if (p) renderDetail(p);
     }
-    if (State.currentPage === 'care') renderCarePage();
+    if (State.currentPage === 'care') renderJournal();
   }, 60_000);
 
   // Refresh tip every 60s (re-evaluates plant state)
@@ -1618,10 +1673,10 @@ function init() {
     if (e.target === e.currentTarget) closeModal();
   });
 
-  // ── Care page water buttons ──
-  document.getElementById('careContent').addEventListener('click', e => {
-    const btn = e.target.closest('.care-water-btn');
-    if (btn) waterPlant(btn.dataset.plantId);
+  // ── Journal: click event → open plant detail ──
+  document.getElementById('journalContent').addEventListener('click', e => {
+    const row = e.target.closest('[data-plant-id]');
+    if (row) openDetail(row.dataset.plantId);
   });
 
   // ── Settings: city search ──
