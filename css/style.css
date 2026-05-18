@@ -596,24 +596,26 @@ button { cursor: pointer; font-family: var(--font); }
   position: absolute;
   bottom: 0;
   left: 0; right: 0;
+  height: 342px;
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   gap: 16px;
   padding: 10px 24px 10px;
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.20) transparent;
+  scrollbar-color: rgba(255,255,255,0.40) rgba(0,0,0,0.10);
   z-index: 2;
 }
-.soil-plants-row::-webkit-scrollbar { height: 3px; }
-.soil-plants-row::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.20); border-radius: 2px; }
+.soil-plants-row::-webkit-scrollbar { height: 4px; }
+.soil-plants-row::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.40); border-radius: 2px; }
 
 /* Individual plant slot */
 .plant-slot {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
   position: relative;
   flex-shrink: 0;
   cursor: pointer;
@@ -737,7 +739,6 @@ button { cursor: pointer; font-family: var(--font); }
   justify-content: center;
   gap: 8px;
   width: 172px;
-  min-height: 320px;
   border: 2px dashed rgba(0,0,0,0.22);
   border-radius: var(--r-md);
   background: rgba(255,255,255,0.28);
@@ -757,36 +758,6 @@ button { cursor: pointer; font-family: var(--font); }
 }
 .add-plant-btn svg { width: 28px; height: 28px; }
 .add-plant-label { font-size: 0.68rem; font-weight: 600; text-align: center; line-height: 1.3; }
-
-/* Persistent FAB add button — always visible top-right of windowsill */
-.add-plant-fab {
-  position: absolute;
-  top: 24px;
-  right: 16px;
-  z-index: 10;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.58);
-  border: 1.5px solid rgba(0,0,0,0.22);
-  font-size: 1.4rem;
-  line-height: 1;
-  color: rgba(26,36,52,0.58);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(4px);
-  transition: all 0.18s;
-  padding: 0;
-}
-.add-plant-fab:hover {
-  background: rgba(255,255,255,0.90);
-  border-color: rgba(0,0,0,0.40);
-  color: var(--text-main);
-  transform: scale(1.12);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.14);
-}
 
 /* Empty hint */
 .empty-hint {

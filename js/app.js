@@ -1232,10 +1232,6 @@ function init() {
   renderRemindersList();
   renderNotifPanel();
 
-  // FAB "+" add button — always visible on windowsill
-  const fabBtn = document.getElementById('addPlantFab');
-  if (fabBtn) fabBtn.addEventListener('click', openModal);
-
   // Refresh weather every 30 min
   setInterval(fetchWeather, WEATHER_TTL_MS);
 
