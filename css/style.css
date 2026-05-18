@@ -612,6 +612,42 @@ button { cursor: pointer; font-family: var(--font); }
 .btn-add-reminder:hover { background: #1A6AFF; transform: translateY(-1px); }
 .btn-add-reminder span { font-size: 1.1rem; }
 
+.reminder-form {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 8px;
+  padding: 10px;
+  background: rgba(255,255,255,0.55);
+  border: 1.5px solid rgba(43,128,255,0.25);
+  border-radius: var(--r-sm);
+}
+.reminder-form-input,
+.reminder-form-time {
+  width: 100%; padding: 7px 10px;
+  border: 1.5px solid var(--border); border-radius: var(--r-xs);
+  font-family: var(--font); font-size: 0.78rem; color: var(--text-main);
+  background: #fff; outline: none;
+  transition: border-color 0.16s;
+}
+.reminder-form-input:focus,
+.reminder-form-time:focus { border-color: var(--blue-accent); }
+.reminder-form-actions {
+  display: flex; gap: 6px; justify-content: flex-end;
+}
+.reminder-form-cancel {
+  padding: 5px 12px; border: 1.5px solid var(--border); border-radius: var(--r-xs);
+  background: none; font-family: var(--font); font-size: 0.76rem;
+  color: var(--text-muted); cursor: pointer;
+  transition: background 0.14s;
+}
+.reminder-form-cancel:hover { background: var(--parchment); }
+.reminder-form-save {
+  padding: 5px 14px; border: none; border-radius: var(--r-xs);
+  background: var(--blue-accent); color: #fff;
+  font-family: var(--font); font-size: 0.76rem; font-weight: 700; cursor: pointer;
+  transition: background 0.14s;
+}
+.reminder-form-save:hover { background: #1A6AFF; }
+
 /* ── Plants section (windowsill) ────────────────────────────────────────── */
 .plants-section {
   height: 360px;

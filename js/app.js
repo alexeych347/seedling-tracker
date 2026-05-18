@@ -1527,23 +1527,48 @@ function init() {
     if (allBtn) State.plants.filter(p => waterStatus(p) === 'bad').forEach(p => waterPlant(p.id));
   });
 
-  // ── Add reminder button (simple prompt for now) ──
-  document.getElementById('addReminderBtn').addEventListener('click', () => {
-    const text = prompt('Введите текст напоминания:');
-    if (!text || !text.trim()) return;
-    const time = prompt('Когда? (например: Сегодня, 19:00)') || 'Скоро';
+  // ── Add reminder inline form ──
+  const reminderForm   = document.getElementById('reminderForm');
+  const reminderBtn    = document.getElementById('addReminderBtn');
+  const reminderText   = document.getElementById('reminderText');
+  const reminderTime   = document.getElementById('reminderTime');
+
+  function openReminderForm() {
+    reminderForm.classList.remove('hidden');
+    reminderBtn.classList.add('hidden');
+    reminderText.focus();
+  }
+
+  function closeReminderForm() {
+    reminderForm.classList.add('hidden');
+    reminderBtn.classList.remove('hidden');
+    reminderText.value = '';
+    reminderTime.value = '';
+  }
+
+  function saveReminder() {
+    const text = reminderText.value.trim();
+    if (!text) { reminderText.focus(); return; }
+    const time = reminderTime.value.trim() || 'Скоро';
     State.reminders.push({
       id: crypto.randomUUID(),
       icon: '📝',
-      text: text.trim(),
-      time: time.trim(),
+      text,
+      time,
       urgency: 'ok',
       auto: false,
     });
     saveReminders();
     renderRemindersList();
     renderNotifPanel();
-  });
+    closeReminderForm();
+  }
+
+  reminderBtn.addEventListener('click', openReminderForm);
+  document.getElementById('reminderCancelBtn').addEventListener('click', closeReminderForm);
+  document.getElementById('reminderSaveBtn').addEventListener('click', saveReminder);
+  reminderText.addEventListener('keydown', e => { if (e.key === 'Enter') reminderTime.focus(); });
+  reminderTime.addEventListener('keydown', e => { if (e.key === 'Enter') saveReminder(); });
 
   // ── Detail overlay close on backdrop click ──
   document.getElementById('detailOverlay').addEventListener('click', e => {

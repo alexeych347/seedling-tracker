@@ -187,6 +187,14 @@
           <div class="reminders-list" id="remindersList">
             <!-- filled by JS -->
           </div>
+          <div class="reminder-form hidden" id="reminderForm">
+            <input class="reminder-form-input" id="reminderText" type="text" placeholder="Что нужно сделать…" maxlength="80" autocomplete="off">
+            <input class="reminder-form-time" id="reminderTime" type="text" placeholder="Когда (необязательно)" maxlength="40" autocomplete="off">
+            <div class="reminder-form-actions">
+              <button class="reminder-form-cancel" id="reminderCancelBtn">Отмена</button>
+              <button class="reminder-form-save" id="reminderSaveBtn">Сохранить</button>
+            </div>
+          </div>
           <button class="btn-add-reminder" id="addReminderBtn">
             <span>+</span> Добавить напоминание
           </button>
