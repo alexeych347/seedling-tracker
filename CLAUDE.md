@@ -22,7 +22,7 @@ There are no tests, no package manager, and no dev server. All changes are visib
 
 Three files, no framework, no bundler:
 
-- **`js/database.js`** — pure data, loaded first. Defines the global `DB` object with care data for 7 plant types (13 varieties). Each variety has `waterIntervalDays`, `stageDays[]`, `stageAdvice[]`, `stages[]`, and display metadata. Three helpers are attached directly to `DB`: `getVariety(typeKey, varietyKey)`, `getVarietyList(typeKey)`, `getAllTypes()`.
+- **`js/database.js`** — pure data, loaded first. Defines the global `DB` object with care data for 9 plant types (33 varieties). Each variety has `waterIntervalDays`, `stageDays[]`, `stageAdvice[]`, `stages[]`, and display metadata. Three helpers are attached directly to `DB`: `getVariety(typeKey, varietyKey)`, `getVarietyList(typeKey)`, `getAllTypes()`.
 
 - **`js/app.js`** — all logic and rendering, loaded after `database.js`. Single `State` object is the source of truth. No virtual DOM — every render function writes directly to `innerHTML`. Page navigation works by toggling `.hidden` on page `<div>`s (see `PAGE_MAP`). `localStorage` keys: `rassada_v3` (plants), `rassada_reminders` (user reminders).
 
@@ -32,9 +32,11 @@ Three files, no framework, no bundler:
 
 Plant object stored in `localStorage`:
 ```js
-{ id, typeKey, varietyKey, plantedAt, lastWatered, stage? }
+{ id, typeKey, varietyKey, plantedAt, lastWatered, stage?, waterHistory? }
 ```
 `stage` is optional — if absent, it's computed from `daysSince(plantedAt)` against `v.stageDays[]`. If present, it was manually advanced by the user.
+
+`waterHistory` is optional — array of ISO date strings, newest first, capped at 20 entries. Written by `waterPlant()` each time the user waters a plant.
 
 ## SVG plant rendering
 
@@ -43,7 +45,8 @@ Plant object stored in `localStorage`:
 ## Adding a new plant type
 
 1. Add an entry to `DB` in `database.js` following the existing structure (all fields required: `name`, `emoji`, `accentColor`, `varieties{}` with at least one variety containing all variety fields).
-2. No changes needed in `app.js` or `app.html` — `DB.getAllTypes()` drives the modal and glossary dynamically.
+2. Add the new `typeKey` to the `FRUITS` map in `app.js` (maps typeKey → emoji string used in SVG stage-3 rendering).
+3. No other changes needed — `DB.getAllTypes()` drives the modal and glossary dynamically.
 
 ## Overview page layout constraints
 
