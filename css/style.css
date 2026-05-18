@@ -547,6 +547,39 @@ button { cursor: pointer; font-family: var(--font); }
   transition: all 0.18s;
 }
 .reminder-done.checked { background: var(--green-lt); border-color: var(--green-lt); }
+
+/* Watering summary widget */
+.water-summary {
+  border-radius: var(--r-xs);
+  padding: 10px 11px;
+  margin-bottom: 8px;
+}
+.water-summary.urgent { background: rgba(239,68,68,0.10); border: 1px solid rgba(239,68,68,0.22); }
+.water-summary.warn   { background: rgba(245,158,11,0.10); border: 1px solid rgba(245,158,11,0.22); }
+.water-summary.ok     { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.20); }
+.ws-header { display: flex; align-items: center; gap: 5px; margin-bottom: 6px; }
+.ws-icon   { font-size: 0.82rem; }
+.ws-label  { font-size: 0.64rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+.water-summary.urgent .ws-label { color: #EF4444; }
+.water-summary.warn   .ws-label { color: #D97706; }
+.water-summary.ok     .ws-label { color: #059669; }
+.ws-plants { display: flex; flex-direction: column; gap: 3px; margin-bottom: 7px; }
+.ws-plant  { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.ws-plant-name { font-size: 0.73rem; font-weight: 600; color: var(--text-main); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ws-plant-time { font-size: 0.64rem; font-weight: 700; flex-shrink: 0; }
+.ws-plant-time.urgent { color: #EF4444; }
+.ws-plant-time.warn   { color: #D97706; }
+.ws-plant-time.ok     { color: #059669; }
+.ws-more { font-size: 0.64rem; color: var(--text-muted); padding-top: 1px; }
+.ws-action {
+  width: 100%; padding: 6px 10px;
+  border-radius: var(--r-xs); border: none;
+  background: #EF4444; color: #fff;
+  font-size: 0.71rem; font-weight: 700;
+  cursor: pointer; transition: background 0.18s;
+}
+.ws-action:hover { background: #DC2626; }
+
 .btn-add-reminder {
   display: flex; align-items: center; gap: 6px;
   padding: 8px 12px;
@@ -1743,7 +1776,11 @@ button { cursor: pointer; font-family: var(--font); }
   .dl-lbl { font-size: 0.57rem; }
 
   /* Напоминания */
-  .reminders-list { gap: 4px; margin-bottom: 6px; max-height: 84px; overflow-y: auto; }
+  .reminders-list { gap: 4px; margin-bottom: 6px; overflow-y: auto; }
+  .water-summary { padding: 8px 9px; margin-bottom: 5px; }
+  .ws-label { font-size: 0.60rem; }
+  .ws-plant-name { font-size: 0.68rem; }
+  .ws-action { padding: 5px 8px; font-size: 0.67rem; }
   .reminder-item  { padding: 5px 8px; gap: 7px; }
   .reminder-title { font-size: 0.70rem; }
   .reminder-time  { font-size: 0.59rem; }

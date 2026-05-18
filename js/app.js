@@ -648,20 +648,72 @@ function allReminders() {
 function renderRemindersList() {
   const el = document.getElementById('remindersList');
   if (!el) return;
-  const list = allReminders();
-  if (!list.length) {
-    el.innerHTML = `<div style="font-size:0.76rem;color:var(--text-muted);padding:8px 0;">Нет активных напоминаний</div>`;
-    return;
+
+  // ── Watering summary block ──
+  const urgent = State.plants.filter(p => waterStatus(p) === 'bad');
+  const warn   = State.plants
+    .filter(p => waterStatus(p) === 'warn')
+    .sort((a, b) => hoursUntilWater(a) - hoursUntilWater(b));
+  const okArr  = State.plants
+    .filter(p => waterStatus(p) === 'ok')
+    .sort((a, b) => hoursUntilWater(a) - hoursUntilWater(b));
+
+  let summaryHtml = '';
+  if (State.plants.length === 0) {
+    summaryHtml = `<div class="water-summary ok"><div class="ws-header"><span class="ws-icon">🌱</span><span class="ws-label">Нет растений</span></div></div>`;
+  } else if (urgent.length > 0) {
+    const shown = urgent.slice(0, 2);
+    const more  = urgent.length - shown.length;
+    const plantsHtml = shown.map(p => {
+      const t = DB[p.typeKey]; const v = DB.getVariety(p.typeKey, p.varietyKey);
+      return `<div class="ws-plant"><span class="ws-plant-name">${t.name} ${v.name}</span><span class="ws-plant-time urgent">Сейчас!</span></div>`;
+    }).join('') + (more > 0 ? `<div class="ws-more">+${more} ещё</div>` : '');
+    const btnLabel = urgent.length === 1 ? 'Полить' : `Полить всех (${urgent.length})`;
+    const btnAttr  = urgent.length === 1 ? `data-plant-id="${urgent[0].id}"` : `data-water-all="urgent"`;
+    summaryHtml = `<div class="water-summary urgent">
+      <div class="ws-header"><span class="ws-icon">💧</span><span class="ws-label">Требует полива</span></div>
+      <div class="ws-plants">${plantsHtml}</div>
+      <button class="ws-action" ${btnAttr}>${btnLabel}</button>
+    </div>`;
+  } else if (warn.length > 0) {
+    const shown = warn.slice(0, 2);
+    const more  = warn.length - shown.length;
+    const plantsHtml = shown.map(p => {
+      const t = DB[p.typeKey]; const v = DB.getVariety(p.typeKey, p.varietyKey);
+      return `<div class="ws-plant"><span class="ws-plant-name">${t.name} ${v.name}</span><span class="ws-plant-time warn">через ${hoursUntilWater(p)} ч</span></div>`;
+    }).join('') + (more > 0 ? `<div class="ws-more">+${more} ещё</div>` : '');
+    summaryHtml = `<div class="water-summary warn">
+      <div class="ws-header"><span class="ws-icon">🌊</span><span class="ws-label">Скоро поливать</span></div>
+      <div class="ws-plants">${plantsHtml}</div>
+    </div>`;
+  } else {
+    const next = okArr[0];
+    const t = DB[next.typeKey]; const v = DB.getVariety(next.typeKey, next.varietyKey);
+    const h = hoursUntilWater(next);
+    const label = h < 24 ? `через ${h} ч` : `через ${Math.floor(h / 24)} дн`;
+    summaryHtml = `<div class="water-summary ok">
+      <div class="ws-header"><span class="ws-icon">✅</span><span class="ws-label">Всё под контролем</span></div>
+      <div class="ws-plants">
+        <div class="ws-plant"><span class="ws-plant-name">${t.name} ${v.name}</span><span class="ws-plant-time ok">${label}</span></div>
+      </div>
+    </div>`;
   }
-  el.innerHTML = list.slice(0, 4).map(r => `
+
+  // ── Stage transitions + user reminders ──
+  const extras = [
+    ...generateRemindersFromPlants().filter(r => r.id.startsWith('auto-stage-')),
+    ...State.reminders,
+  ];
+  const extrasHtml = extras.slice(0, 3).map(r => `
     <div class="reminder-item ${r.urgency || 'ok'}">
       <span class="reminder-icon">${r.icon}</span>
       <div class="reminder-body">
         <div class="reminder-title">${r.text}</div>
         <div class="reminder-time">${r.time}</div>
       </div>
-      ${r.auto && r.plantId ? `<button class="reminder-done" data-plant-id="${r.plantId}" title="Полить сейчас"></button>` : ''}
     </div>`).join('');
+
+  el.innerHTML = summaryHtml + extrasHtml;
 }
 
 function renderNotifPanel() {
@@ -1324,7 +1376,9 @@ function init() {
   // ── Reminders panel (water from reminder dot) ──
   document.getElementById('remindersList').addEventListener('click', e => {
     const btn = e.target.closest('[data-plant-id]');
-    if (btn) waterPlant(btn.dataset.plantId);
+    if (btn) { waterPlant(btn.dataset.plantId); return; }
+    const allBtn = e.target.closest('[data-water-all]');
+    if (allBtn) State.plants.filter(p => waterStatus(p) === 'bad').forEach(p => waterPlant(p.id));
   });
 
   // ── Add reminder button (simple prompt for now) ──
