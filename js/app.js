@@ -1477,7 +1477,6 @@ function init() {
   // ── Detail buttons ──
   document.getElementById('backBtn').addEventListener('click', closeDetail);
   document.getElementById('deleteBtnTop').addEventListener('click', deletePlant);
-  document.getElementById('deleteBtnBottom').addEventListener('click', deletePlant);
 
   document.getElementById('detailBody').addEventListener('click', e => {
     if (e.target.closest('.btn-water'))   waterPlant(State.selectedId);
