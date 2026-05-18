@@ -1625,8 +1625,9 @@ button { cursor: pointer; font-family: var(--font); }
 @media (max-width: 767px) {
   html, body { overflow: auto; height: auto; }
   .app-body { overflow-y: auto; height: auto; min-height: 100vh; }
+  .app-content { overflow-y: auto; padding-bottom: 60px; }
 
-  /* Sidebar: slide-in overlay */
+  /* ── Sidebar: slide-in overlay ─── */
   .sidebar {
     position: fixed;
     left: -220px; top: 0; bottom: 0;
@@ -1634,18 +1635,22 @@ button { cursor: pointer; font-family: var(--font); }
     transition: left 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .sidebar.mobile-open { left: 0; box-shadow: 4px 0 28px rgba(0,0,0,0.45); }
-
-  /* Show hamburger, show bottom nav */
   .hamburger-btn { display: flex !important; }
   .mobile-bottom-nav { display: flex !important; }
 
-  /* App content scrollable, with room for bottom nav */
-  .app-content { overflow-y: auto; padding-bottom: 60px; }
+  /* ── Header: скрыть дату/время, освободить место ─── */
+  .header-datetime { display: none; }
 
-  /* Overview: sky section fixed height, panels scroll horizontally */
+  /* ── Overview: порядок элементов ─── */
+  .sky-bg          { order: 1; }
+  .plants-section  { order: 2; }
+  .plants-row-header { order: 3; border-bottom: none; border-top: 1px solid rgba(195,160,95,0.28); }
+  .stats-bar       { order: 4; }
+
+  /* ── Sky + стеклянные панели ─── */
   .sky-bg {
     flex: none;
-    height: 230px;
+    height: 172px;
     overflow: hidden;
   }
   .overview-panels {
@@ -1653,7 +1658,7 @@ button { cursor: pointer; font-family: var(--font); }
     top: 10px; left: 0; right: 0;
     display: flex;
     gap: 8px;
-    padding: 0 10px;
+    padding: 0 12px;
     grid-template-columns: unset;
     overflow-x: auto;
     overflow-y: hidden;
@@ -1661,27 +1666,73 @@ button { cursor: pointer; font-family: var(--font); }
     -webkit-overflow-scrolling: touch;
   }
   .overview-panels::-webkit-scrollbar { display: none; }
-  .glass-panel { flex-shrink: 0; width: 240px; }
 
-  /* Plants section: shorter on mobile */
-  .plants-section { height: 230px; }
+  /* Панели: компактнее */
+  .glass-panel { flex-shrink: 0; width: 205px; padding: 10px 12px; }
 
-  /* Move add-plant button below the windowsill on mobile so it's
-     never covered by the soil-plants-row overflow (which extends upward) */
-  .sky-bg          { order: 1; }
-  .plants-section  { order: 2; }
-  .plants-row-header { order: 3; border-bottom: none; border-top: 1px solid rgba(195,160,95,0.28); }
-  .stats-bar       { order: 4; }
+  /* Погода: скрыть почасовой прогноз, уменьшить отступы */
+  .weather-hourly { display: none; }
+  .weather-main { margin-bottom: 6px; gap: 8px; }
+  .weather-temp { font-size: 1.6rem; }
+  .weather-stats { margin-bottom: 0; padding: 5px 6px; gap: 3px 4px; }
+  .wstat-lbl { font-size: 0.58rem; }
+  .wstat-val { font-size: 0.75rem; }
 
-  /* Stats bar: wraps */
-  .stats-bar { height: auto; flex-wrap: wrap; padding: 8px 12px; gap: 6px; }
-  .stat-divider { display: none; }
-  .stat-item { flex: 0 0 calc(50% - 3px); }
+  /* Световой день: компактная дуга */
+  .daylight-arc-wrap { padding: 0; }
+  .arc-svg { max-height: 55px; }
+  .daylight-times { padding-top: 5px; }
+  .dl-val { font-size: 0.80rem; }
+  .dl-lbl { font-size: 0.58rem; }
 
-  /* Detail sheet: full width */
+  /* Напоминания: компактнее */
+  .reminders-list { gap: 4px; margin-bottom: 6px; }
+  .reminder-item { padding: 5px 8px; gap: 7px; }
+  .reminder-title { font-size: 0.72rem; }
+  .reminder-time  { font-size: 0.60rem; }
+  .btn-add-reminder { padding: 6px 10px; font-size: 0.70rem; }
+
+  /* ── Подоконник: КРИТИЧНО — высота row должна совпадать с секцией ─── */
+  .plants-section { height: 278px; }
+
+  /* soil-plants-row высотой = plants-section, иначе горшки вылезают вверх в sky-bg */
+  .soil-plants-row {
+    height: 278px;
+    gap: 10px;
+    padding: 8px 14px;
+  }
+
+  /* Карточки растений: немного у́же */
+  .plant-card { width: 148px; padding: 8px 10px 9px; }
+
+  /* Горшок SVG: чуть меньше, чтобы не вылезать из карточки */
+  .pc-pot-zone svg {
+    transform: scale(0.93);
+    transform-origin: bottom center;
+  }
+
+  /* ── Бар «Посадить растение» ─── */
+  .plants-row-header { padding: 6px 14px; }
+
+  /* ── Статистика: горизонтальная прокручиваемая строка ─── */
+  .stats-bar {
+    height: auto;
+    min-height: 50px;
+    flex-wrap: nowrap;
+    padding: 8px 12px;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .stats-bar::-webkit-scrollbar { display: none; }
+  .stat-item { flex: 0 0 auto; min-width: 130px; }
+  .stat-icon { width: 28px; height: 28px; border-radius: 7px; }
+  .stat-divider { display: block; }
+
+  /* ── Панель деталей: на весь экран ─── */
   .detail-sheet { width: 100%; }
 
-  /* Notif panel: full width */
+  /* ── Панель уведомлений: на весь экран ─── */
   .notif-panel { width: 100%; }
 }
 
