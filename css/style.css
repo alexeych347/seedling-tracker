@@ -853,13 +853,18 @@ button { cursor: pointer; font-family: var(--font); }
   flex-wrap: wrap;
 }
 .filter-chip {
-  padding: 5px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 14px;
   border-radius: var(--r-pill);
   border: 1px solid rgba(0,0,0,0.14);
   background: rgba(0,0,0,0.05);
   color: var(--text-sub);
   font-size: 0.76rem;
   font-weight: 600;
+  cursor: pointer;
   transition: all 0.18s;
 }
 .filter-chip:hover {
@@ -895,6 +900,7 @@ button { cursor: pointer; font-family: var(--font); }
   border-bottom: 2px solid;
 }
 .glossary-type-emoji { width: 1.7rem; height: 1.7rem; flex-shrink: 0; display: flex; align-items: center; }
+.filter-chip .glossary-type-emoji { width: 1.2rem; height: 1.2rem; }
 .glossary-type-name {
   font-size: 1.05rem;
   font-weight: 800;

@@ -5,10 +5,10 @@
 const PLANT_ICONS = {
 
   tomato: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <circle cx="20" cy="25" r="13" fill="#E53935"/>
-    <ellipse cx="14" cy="19" rx="4" ry="3" fill="white" opacity="0.15"/>
-    <path d="M14 16 Q17 9 20 13 Q23 9 26 16 Q21 12 20 13 Q19 12 14 16Z" fill="#4CAF50"/>
-    <line x1="20" y1="7" x2="20" y2="13" stroke="#388E3C" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="20" cy="26" r="12" fill="#E53935"/>
+    <ellipse cx="14.5" cy="21" rx="4" ry="3" fill="white" opacity="0.15"/>
+    <line x1="20" y1="7" x2="20" y2="14" stroke="#388E3C" stroke-width="2.5" stroke-linecap="round"/>
+    <polygon points="20,9.5 21.2,12.4 24.3,12.6 21.9,14.6 22.7,17.6 20,16 17.4,17.6 18.1,14.6 15.7,12.6 18.8,12.4" fill="#4CAF50"/>
   </svg>`,
 
   cucumber: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -20,33 +20,35 @@ const PLANT_ICONS = {
   </svg>`,
 
   pepper: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="17.5" y="4" width="5" height="7" rx="2.5" fill="#388E3C"/>
-    <path d="M20 10 C10 10 7 18 8 27 C9 34 14 37 20 37 C26 37 31 34 32 27 C33 18 30 10 20 10Z" fill="#E64A19"/>
-    <ellipse cx="13.5" cy="20" rx="3.5" ry="5" fill="white" opacity="0.15"/>
-    <path d="M14 30 Q20 34 26 30" stroke="#BF360C" stroke-width="1.5" fill="none" opacity="0.35" stroke-linecap="round"/>
+    <path d="M11 13 C8 17 8 25 10 30 C12 35 15 38 18 38.5 C19 39 21 39 22 38.5 C25 38 28 35 30 30 C32 25 32 17 29 13 Z" fill="#FF6D00"/>
+    <line x1="15" y1="28" x2="14" y2="36" stroke="#E64A19" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+    <line x1="25" y1="28" x2="26" y2="36" stroke="#E64A19" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+    <ellipse cx="14" cy="21" rx="3.5" ry="5" fill="white" opacity="0.15"/>
+    <rect x="18" y="5" width="4" height="8" rx="2" fill="#33691E"/>
+    <path d="M14 12 Q17 9 20 12" stroke="#388E3C" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M26 12 Q23 9 20 12" stroke="#388E3C" stroke-width="2" fill="none" stroke-linecap="round"/>
   </svg>`,
 
   eggplant: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <ellipse cx="20" cy="26" rx="11" ry="12" fill="#6A1B9A"/>
+    <ellipse cx="20" cy="27" rx="10" ry="14" fill="#7B1FA2"/>
     <ellipse cx="14" cy="21" rx="3.5" ry="5" fill="white" opacity="0.12"/>
-    <path d="M14 16 Q17 10 20 14 Q23 10 26 16 Q21 13 20 14 Q19 13 14 16Z" fill="#4CAF50"/>
-    <line x1="20" y1="8" x2="20" y2="14" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="20" cy="13" rx="10" ry="4" fill="#388E3C"/>
+    <line x1="20" y1="6" x2="20" y2="13" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round"/>
   </svg>`,
 
   cabbage: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <circle cx="20" cy="22" r="15" fill="#2E7D32"/>
-    <circle cx="20" cy="22" r="11" fill="#43A047"/>
-    <circle cx="20" cy="22" r="7.5" fill="#81C784"/>
-    <circle cx="20" cy="22" r="4" fill="#C8E6C9"/>
-    <ellipse cx="15" cy="17" rx="3.5" ry="2.5" fill="white" opacity="0.2"/>
+    <path d="M4 23 C5 11 13 8 20 9 C27 8 35 11 36 23 C35 34 28 39 20 39 C12 39 5 34 4 23Z" fill="#2E7D32"/>
+    <path d="M7 23 C8 14 14 11 20 12 C26 11 32 14 33 23 C31 32 26 37 20 37 C14 37 9 32 7 23Z" fill="#43A047"/>
+    <ellipse cx="20" cy="24" rx="9" ry="8" fill="#C8E6C9"/>
+    <ellipse cx="15.5" cy="20" rx="2.5" ry="2" fill="white" opacity="0.2"/>
   </svg>`,
 
   basil: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <line x1="20" y1="36" x2="20" y2="24" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round"/>
-    <ellipse cx="20" cy="15" rx="8" ry="10" fill="#388E3C"/>
-    <ellipse cx="10" cy="22" rx="6" ry="8" fill="#43A047" transform="rotate(-25 10 22)"/>
-    <ellipse cx="30" cy="22" rx="6" ry="8" fill="#43A047" transform="rotate(25 30 22)"/>
-    <ellipse cx="16" cy="12" rx="3" ry="4" fill="#81C784" opacity="0.4"/>
+    <line x1="20" y1="38" x2="20" y2="26" stroke="#1B5E20" stroke-width="2.5" stroke-linecap="round"/>
+    <ellipse cx="20" cy="17" rx="11" ry="13" fill="#2E7D32"/>
+    <ellipse cx="10" cy="28" rx="9" ry="7" fill="#388E3C" transform="rotate(-30 10 28)"/>
+    <ellipse cx="30" cy="28" rx="9" ry="7" fill="#388E3C" transform="rotate(30 30 28)"/>
+    <ellipse cx="15.5" cy="13" rx="3.5" ry="5" fill="#81C784" opacity="0.4"/>
   </svg>`,
 
   zucchini: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -113,13 +115,19 @@ const PLANT_ICONS = {
   </svg>`,
 
   parsley: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <line x1="20" y1="37" x2="20" y2="26" stroke="#1B5E20" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="14" y1="28" x2="9" y2="22" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
-    <line x1="26" y1="28" x2="31" y2="22" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
-    <ellipse cx="20" cy="17" rx="7" ry="9" fill="#2E7D32"/>
-    <ellipse cx="10" cy="21" rx="5.5" ry="7" fill="#388E3C" transform="rotate(-20 10 21)"/>
-    <ellipse cx="30" cy="21" rx="5.5" ry="7" fill="#388E3C" transform="rotate(20 30 21)"/>
-    <ellipse cx="16" cy="13" rx="3" ry="4" fill="#4CAF50" opacity="0.5"/>
+    <line x1="20" y1="38" x2="20" y2="26" stroke="#558B2F" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="20" y1="26" x2="10" y2="17" stroke="#689F38" stroke-width="2" stroke-linecap="round"/>
+    <line x1="20" y1="26" x2="20" y2="15" stroke="#689F38" stroke-width="2" stroke-linecap="round"/>
+    <line x1="20" y1="26" x2="30" y2="17" stroke="#689F38" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="7.5" cy="14" r="3.5" fill="#7CB342"/>
+    <circle cx="12" cy="11" r="3" fill="#8BC34A"/>
+    <circle cx="14.5" cy="15.5" r="2.8" fill="#7CB342"/>
+    <circle cx="17.5" cy="11.5" r="3" fill="#7CB342"/>
+    <circle cx="22.5" cy="11.5" r="3" fill="#7CB342"/>
+    <circle cx="20" cy="8" r="3.5" fill="#8BC34A"/>
+    <circle cx="32.5" cy="14" r="3.5" fill="#7CB342"/>
+    <circle cx="28" cy="11" r="3" fill="#8BC34A"/>
+    <circle cx="25.5" cy="15.5" r="2.8" fill="#7CB342"/>
   </svg>`,
 
   strawberry: `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
