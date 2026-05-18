@@ -1656,6 +1656,46 @@ function init() {
     URL.revokeObjectURL(url);
   });
 
+  document.getElementById('importFile').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        const plants    = Array.isArray(parsed.plants)    ? parsed.plants    : [];
+        const reminders = Array.isArray(parsed.reminders) ? parsed.reminders : [];
+        if (!plants.length && !reminders.length) throw new Error('empty');
+
+        const merge = confirm(
+          `Найдено: ${plants.length} растений, ${reminders.length} напоминаний.\n` +
+          `Добавить к текущим данным? (Отмена — заменить всё)`
+        );
+        if (merge) {
+          // Merge: skip duplicates by id
+          const existingPlantIds    = new Set(State.plants.map(p => p.id));
+          const existingReminderIds = new Set(State.reminders.map(r => r.id));
+          plants.forEach(p    => { if (!existingPlantIds.has(p.id))       State.plants.push(p); });
+          reminders.forEach(r => { if (!existingReminderIds.has(r.id)) State.reminders.push(r); });
+        } else {
+          State.plants    = plants;
+          State.reminders = reminders;
+        }
+        saveState();
+        saveReminders();
+        renderPlantsSection();
+        renderStats();
+        renderRemindersList();
+        renderNotifPanel();
+        document.getElementById('importSub').textContent = `Импортировано: ${plants.length} растений, ${reminders.length} напоминаний`;
+      } catch (_) {
+        document.getElementById('importSub').textContent = 'Ошибка: неверный формат файла';
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  });
+
   document.getElementById('resetBtn').addEventListener('click', () => {
     if (!confirm('Удалить все растения и напоминания? Это нельзя отменить.')) return;
     State.plants = [];
