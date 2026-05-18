@@ -202,13 +202,6 @@ function buildRootSVG(w = 86) {
 }
 
 function plantSVG(stage, typeKey) {
-  const FRUITS = {
-    tomato: '🍅', cucumber: '🥒', pepper: '🌶️',
-    basil: '🌿', eggplant: '🍆', cabbage: '🥬', zucchini: '🥒',
-    carrot: '🥕', beet: '🟣', onion: '🧅', radish: '🌱',
-    lettuce: '🥗', dill: '🌿', parsley: '🪴', strawberry: '🍓',
-  };
-
   if (stage === 0) return '';
 
   if (stage === 1) return `
@@ -236,8 +229,11 @@ function plantSVG(stage, typeKey) {
     <path d="M16,-45 C22,-55 36,-51 33,-41 C30,-33 18,-43 16,-45Z"
           fill="#6CC668"/>`;
 
-  // Stage 3 — full plant with fruit emoji
-  const fr = FRUITS[typeKey] || '🌱';
+  // Stage 3 — full plant with icon
+  const iconSvg = PLANT_ICONS[typeKey] || '';
+  const frElement = iconSvg
+    ? `<image x="-16" y="-90" width="32" height="32" href="${'data:image/svg+xml,' + encodeURIComponent(iconSvg)}"/>`
+    : `<text x="0" y="-74" text-anchor="middle" font-size="22">🌱</text>`;
   return `
     <line x1="0" y1="0" x2="0" y2="-62"
           stroke="#1A6622" stroke-width="3.2" stroke-linecap="round"/>
@@ -253,7 +249,7 @@ function plantSVG(stage, typeKey) {
     <line x1="0" y1="-43" x2="18" y2="-54" stroke="#2A7A30" stroke-width="2.2" stroke-linecap="round"/>
     <path d="M18,-54 C25,-65 40,-61 36,-51 C32,-42 20,-52 18,-54Z"
           fill="#4CA84C"/>
-    <text x="0" y="-74" text-anchor="middle" font-size="22" dominant-baseline="auto">${fr}</text>`;
+    ${frElement}`;
 }
 
 // ── Sky scene ─────────────────────────────────────────────────────────────────
@@ -560,7 +556,7 @@ function renderCarePage() {
     return `
       <div class="care-plant-row">
         <div class="care-plant-left">
-          <span class="care-plant-emoji">${type.emoji}</span>
+          <span class="care-plant-emoji">${PLANT_ICONS[plant.typeKey] || type.emoji}</span>
           <div>
             <div class="care-plant-name">${v.fullName}</div>
             <div class="care-plant-variety">Посеяно ${fmtDate(plant.plantedAt)} · ${daysSince(plant.plantedAt)} дн</div>
@@ -584,7 +580,7 @@ function renderGlossary() {
   filterRow.innerHTML = `<button class="filter-chip ${State.glossaryFilter === 'all' ? 'active' : ''}" data-filter="all">Все</button>` +
     types.map(t => `
       <button class="filter-chip ${State.glossaryFilter === t.key ? 'active' : ''}" data-filter="${t.key}">
-        ${t.emoji} ${t.name}
+        <span class="glossary-type-emoji">${PLANT_ICONS[t.key] || t.emoji}</span>${t.name}
       </button>`).join('');
 
   // My plant varietyKeys (for badge)
@@ -599,7 +595,7 @@ function renderGlossary() {
     return `
       <div class="glossary-type-section">
         <div class="glossary-type-header" style="border-color:${typeData.accentColor}">
-          <span class="glossary-type-emoji">${type.emoji}</span>
+          <span class="glossary-type-emoji">${PLANT_ICONS[type.key] || type.emoji}</span>
           <span class="glossary-type-name">${type.name}</span>
           <span class="glossary-type-count">${varieties.length} ${varieties.length === 1 ? 'сорт' : varieties.length < 5 ? 'сорта' : 'сортов'}</span>
         </div>
@@ -615,7 +611,7 @@ function renderGlossary() {
             return `
               <div class="variety-card">
                 <div class="variety-card-header">
-                  <span class="variety-card-emoji">${v.emoji}</span>
+                  <span class="variety-card-emoji">${PLANT_ICONS[type.key] || v.emoji}</span>
                   <div class="variety-card-names">
                     <div class="variety-card-name">${v.name}</div>
                     <div class="variety-card-full">${v.fullName}</div>
@@ -888,7 +884,7 @@ function renderModal() {
 function renderPlantTypeGrid() {
   document.getElementById('plantTypeGrid').innerHTML = DB.getAllTypes().map(t => `
     <button class="plant-type-btn ${State.modal.typeKey === t.key ? 'selected' : ''}" data-type-key="${t.key}">
-      <span class="plant-type-emoji">${t.emoji}</span>
+      <span class="plant-type-emoji">${PLANT_ICONS[t.key] || t.emoji}</span>
       <span class="plant-type-name">${t.name}</span>
     </button>`).join('');
 }
@@ -905,7 +901,7 @@ function renderVarietyList() {
   document.getElementById('step2TypeName').textContent = t.name + ' — выберите сорт';
   document.getElementById('varietyList').innerHTML = DB.getVarietyList(State.modal.typeKey).map(v => `
     <button class="variety-btn ${State.modal.varietyKey === v.key ? 'selected' : ''}" data-variety-key="${v.key}">
-      <span class="variety-emoji">${v.emoji}</span>
+      <span class="variety-emoji">${PLANT_ICONS[State.modal.typeKey] || v.emoji}</span>
       <div class="variety-info">
         <div class="variety-name">${v.name}</div>
         <div class="variety-desc">${v.fullName}</div>

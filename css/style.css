@@ -922,7 +922,7 @@ button { cursor: pointer; font-family: var(--font); }
   padding-bottom: 10px;
   border-bottom: 2px solid;
 }
-.glossary-type-emoji { font-size: 1.6rem; }
+.glossary-type-emoji { width: 1.7rem; height: 1.7rem; flex-shrink: 0; display: flex; align-items: center; }
 .glossary-type-name {
   font-size: 1.05rem;
   font-weight: 800;
@@ -962,7 +962,7 @@ button { cursor: pointer; font-family: var(--font); }
   gap: 12px;
   border-bottom: 1px solid var(--border-lt);
 }
-.variety-card-emoji { font-size: 1.8rem; }
+.variety-card-emoji { width: 2rem; height: 2rem; flex-shrink: 0; display: flex; align-items: center; }
 .variety-card-names { flex: 1; }
 .variety-card-name {
   font-size: 0.95rem;
@@ -1085,7 +1085,7 @@ button { cursor: pointer; font-family: var(--font); }
   box-shadow: var(--shadow-xs);
 }
 .care-plant-left { display: flex; align-items: center; gap: 12px; flex: 1; }
-.care-plant-emoji { font-size: 1.6rem; }
+.care-plant-emoji { width: 1.8rem; height: 1.8rem; flex-shrink: 0; display: flex; align-items: center; }
 .care-plant-name { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
 .care-plant-variety { font-size: 0.72rem; color: var(--text-muted); }
 .care-status-badge {
@@ -1497,8 +1497,14 @@ button { cursor: pointer; font-family: var(--font); }
 }
 .plant-type-btn:hover { border-color: var(--green-mint); background: #F0FAF4; transform: translateY(-2px); box-shadow: var(--shadow-sm); }
 .plant-type-btn.selected { border-color: var(--green-lt); background: var(--green-pale); }
-.plant-type-emoji { font-size: 1.75rem; line-height: 1; }
+.plant-type-emoji { width: 2rem; height: 2rem; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .plant-type-name { font-size: 0.60rem; font-weight: 700; color: var(--text-sub); text-align: center; }
+
+/* SVG icons scale to fill their container */
+.plant-type-emoji svg, .glossary-type-emoji svg,
+.variety-card-emoji svg, .care-plant-emoji svg, .variety-emoji svg {
+  display: block; width: 100%; height: 100%;
+}
 
 /* Variety list */
 .variety-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
@@ -1509,7 +1515,7 @@ button { cursor: pointer; font-family: var(--font); }
 }
 .variety-btn:hover { border-color: var(--green-mint); background: #F0FAF4; transform: translateX(2px); }
 .variety-btn.selected { border-color: var(--green-lt); background: var(--green-pale); box-shadow: 0 2px 10px rgba(34,139,82,0.14); }
-.variety-emoji { font-size: 1.45rem; flex-shrink: 0; }
+.variety-emoji { width: 1.7rem; height: 1.7rem; flex-shrink: 0; display: flex; align-items: center; }
 .variety-info { flex: 1; min-width: 0; }
 .variety-name { font-size: 0.88rem; font-weight: 700; color: var(--text-main); }
 .variety-desc { font-size: 0.71rem; font-weight: 500; color: var(--text-muted); margin-top: 1px; }
