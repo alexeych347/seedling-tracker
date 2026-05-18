@@ -415,10 +415,15 @@ function applyWeather(data) {
   const cur    = data.current;
   const hourly = data.hourly;
   const daily  = data.daily;
-  const now    = new Date();
-  const sunrise = new Date(daily.sunrise[0]);
-  const sunset  = new Date(daily.sunset[0]);
-  const isDay   = now >= sunrise && now <= sunset;
+
+  // API returns all times in city local time (timezone=auto).
+  // Use utc_offset_seconds to compute city's current local time as ISO string
+  // so we can compare directly with API time strings without Date parsing issues.
+  const utcOffsetSec = data.utc_offset_seconds || 0;
+  const cityNowISO = new Date(Date.now() + utcOffsetSec * 1000).toISOString().slice(0, 16);
+  const sunriseISO = daily.sunrise[0].slice(0, 16);
+  const sunsetISO  = daily.sunset[0].slice(0, 16);
+  const isDay = cityNowISO >= sunriseISO && cityNowISO <= sunsetISO;
 
   // Update shared weather state for tip rendering
   WeatherState.temp        = Math.round(cur.temperature_2m);
@@ -470,19 +475,19 @@ function applyWeather(data) {
     uEl.textContent = uvLabel;
   }
 
-  // Hourly — next 5 slots from now
+  // Hourly — next 3 slots from now (string comparison works for ISO format)
   const hRow = document.getElementById('weatherHourly');
   if (hRow && hourly.time) {
-    const startIdx = hourly.time.findIndex(t => new Date(t) >= now);
+    const startIdx = hourly.time.findIndex(t => t.slice(0, 16) >= cityNowISO);
     const from = startIdx < 0 ? 0 : startIdx;
     const items = [];
     for (let i = 0; i < 3; i++) {
       const idx = from + i;
       if (idx >= hourly.time.length) break;
-      const t    = new Date(hourly.time[idx]);
-      const tDay = t >= sunrise && t <= sunset;
+      const slotISO = hourly.time[idx].slice(0, 16);
+      const tDay = slotISO >= sunriseISO && slotISO <= sunsetISO;
       items.push(`<div class="hourly-item">
-        <div class="hr-time">${i === 0 ? 'Сейчас' : fmtHhmm(hourly.time[idx])}</div>
+        <div class="hr-time">${i === 0 ? 'Сейчас' : slotISO.slice(11, 16)}</div>
         <div class="hr-icon">${wmoIcon(hourly.weather_code[idx], tDay)}</div>
         <div class="hr-temp">${Math.round(hourly.temperature_2m[idx])}°C</div>
       </div>`);
@@ -490,28 +495,31 @@ function applyWeather(data) {
     hRow.innerHTML = items.join('');
   }
 
-  // Daylight panel
+  // Daylight panel — times are already city-local strings, just slice
   const deEl = document.getElementById('daylightEyebrow');
   const srEl = document.getElementById('daylightSunrise');
   const drEl = document.getElementById('daylightDuration');
   const ssEl = document.getElementById('daylightSunset');
   if (deEl) {
-    const dateStr = sunrise.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }).replace(' г.', '');
+    const [y, m, d] = sunriseISO.slice(0, 10).split('-').map(Number);
+    const dateStr = new Date(y, m - 1, d).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }).replace(' г.', '');
     deEl.textContent = `🌅 Световой день · ${dateStr}`;
   }
-  if (srEl) srEl.textContent = fmtHhmm(daily.sunrise[0]);
-  if (ssEl) ssEl.textContent = fmtHhmm(daily.sunset[0]);
+  if (srEl) srEl.textContent = sunriseISO.slice(11, 16);
+  if (ssEl) ssEl.textContent = sunsetISO.slice(11, 16);
   if (drEl) {
-    const ms  = sunset - sunrise;
-    const h   = Math.floor(ms / 3_600_000);
-    const min = Math.round((ms % 3_600_000) / 60_000);
-    drEl.textContent = `${h} ч ${min} мин`;
+    const srMin = parseInt(sunriseISO.slice(11, 13)) * 60 + parseInt(sunriseISO.slice(14, 16));
+    const ssMin = parseInt(sunsetISO.slice(11, 13))  * 60 + parseInt(sunsetISO.slice(14, 16));
+    const total = ssMin - srMin;
+    drEl.textContent = `${Math.floor(total / 60)} ч ${total % 60} мин`;
   }
 
   // Growth index
   const giEl = document.getElementById('growthIndex');
   if (giEl) {
-    const daylightHours = (sunset - sunrise) / 3_600_000;
+    const srMin = parseInt(sunriseISO.slice(11, 13)) * 60 + parseInt(sunriseISO.slice(14, 16));
+    const ssMin = parseInt(sunsetISO.slice(11, 13))  * 60 + parseInt(sunsetISO.slice(14, 16));
+    const daylightHours = (ssMin - srMin) / 60;
     const uvIndex = cur.uv_index ?? 0;
     const daylightScore = Math.min(daylightHours / 14, 1);
     const uvScore = Math.min(uvIndex / 6, 1);
@@ -534,11 +542,11 @@ function applyWeather(data) {
   // Weekly forecast strip
   const wkEl = document.getElementById('weatherWeekly');
   if (wkEl && daily.time && daily.weather_code) {
-    const todayStr = new Date().toDateString();
+    const todayDateStr = cityNowISO.slice(0, 10);
     const items = daily.time.map((dateStr, i) => {
-      const d = new Date(dateStr);
-      const isToday = d.toDateString() === todayStr;
-      const dayName = isToday ? 'Сег' : d.toLocaleDateString('ru-RU', { weekday: 'short' }).replace('.', '');
+      const isToday = dateStr.slice(0, 10) === todayDateStr;
+      const [y, m, d] = dateStr.slice(0, 10).split('-').map(Number);
+      const dayName = isToday ? 'Сег' : new Date(y, m - 1, d).toLocaleDateString('ru-RU', { weekday: 'short' }).replace('.', '');
       const icon = wmoIcon(daily.weather_code[i], true);
       const max = Math.round(daily.temperature_2m_max[i]);
       const min = Math.round(daily.temperature_2m_min[i]);
