@@ -484,6 +484,29 @@ function applyWeather(data) {
     drEl.textContent = `${h} ч ${min} мин`;
   }
 
+  // Growth index
+  const giEl = document.getElementById('growthIndex');
+  if (giEl) {
+    const daylightHours = (sunset - sunrise) / 3_600_000;
+    const uvIndex = cur.uv_index ?? 0;
+    const daylightScore = Math.min(daylightHours / 14, 1);
+    const uvScore = Math.min(uvIndex / 6, 1);
+    const score = Math.round((daylightScore * 0.65 + uvScore * 0.35) * 100);
+    const barColor = score >= 70 ? '#22C55E' : score >= 50 ? '#84CC16' : score >= 30 ? '#F59E0B' : '#94A3B8';
+    const desc = score >= 80 ? 'Идеальные условия для роста'
+      : score >= 60 ? 'Отличные условия'
+      : score >= 40 ? 'Хорошие условия'
+      : score >= 20 ? 'Умеренные условия'
+      : 'Слабое освещение';
+    giEl.innerHTML = `
+      <div class="gi-header">
+        <span class="gi-label">🌱 Индекс роста</span>
+        <span class="gi-score">${score}</span>
+      </div>
+      <div class="gi-bar-wrap"><div class="gi-bar" style="width:${score}%;background:${barColor}"></div></div>
+      <div class="gi-desc">${desc}</div>`;
+  }
+
   // Weekly forecast strip
   const wkEl = document.getElementById('weatherWeekly');
   if (wkEl && daily.time && daily.weather_code) {

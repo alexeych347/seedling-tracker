@@ -518,6 +518,15 @@ button { cursor: pointer; font-family: var(--font); }
 .dl-val { font-size: 0.88rem; font-weight: 800; color: var(--text-main); }
 .dl-lbl { font-size: 0.62rem; color: var(--text-muted); margin-top: 1px; }
 
+/* Growth index */
+.growth-index { padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--border-lt); }
+.gi-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 5px; }
+.gi-label { font-size: 0.62rem; font-weight: 700; color: var(--text-muted); }
+.gi-score { font-size: 1.5rem; font-weight: 800; color: var(--text-main); line-height: 1; }
+.gi-bar-wrap { height: 5px; background: rgba(0,0,0,0.08); border-radius: 3px; margin-bottom: 5px; overflow: hidden; }
+.gi-bar { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.gi-desc { font-size: 0.62rem; color: var(--text-muted); }
+
 /* Reminders panel */
 .reminders-panel { display: flex; flex-direction: column; }
 .reminders-list { flex: 1; display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
@@ -1774,6 +1783,7 @@ button { cursor: pointer; font-family: var(--font); }
   .daylight-times { padding-top: 6px; }
   .dl-val { font-size: 0.76rem; }
   .dl-lbl { font-size: 0.57rem; }
+  .growth-index { display: none; }
 
   /* Напоминания */
   .reminders-list { gap: 4px; margin-bottom: 6px; overflow-y: auto; }
