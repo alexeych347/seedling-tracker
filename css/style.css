@@ -564,8 +564,8 @@ button { cursor: pointer; font-family: var(--font); }
 .water-summary.warn   .ws-label { color: #D97706; }
 .water-summary.ok     .ws-label { color: #059669; }
 .ws-plants { display: flex; flex-direction: column; gap: 3px; margin-bottom: 7px; }
-.ws-plant  { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.ws-plant-name { font-size: 0.73rem; font-weight: 600; color: var(--text-main); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ws-plant  { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+.ws-plant-name { font-size: 0.73rem; font-weight: 600; color: var(--text-main); min-width: 0; }
 .ws-plant-time { font-size: 0.64rem; font-weight: 700; flex-shrink: 0; }
 .ws-plant-time.urgent { color: #EF4444; }
 .ws-plant-time.warn   { color: #D97706; }
