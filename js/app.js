@@ -117,6 +117,102 @@ const POT_COLORS = [
 ];
 const SOIL_COLOR = '#3A1C08';
 
+/* Type-specific fruit/vegetable drawn on stage-3 branches */
+function stage3Fruits(typeKey) {
+  // Fruit placement: two main positions on lower branches
+  const L = [-22, -26]; // left branch area
+  const R = [20, -28];  // right branch area
+
+  const fr = {
+    tomato: (x, y) =>
+      `<circle cx="${x}" cy="${y}" r="7" fill="#E53935"/>
+       <path d="M${x-3},${y-6} Q${x},${y-10} ${x+3},${y-6} Q${x},${y-8} ${x-3},${y-6}Z" fill="#4CAF50"/>
+       <ellipse cx="${x-2}" cy="${y-1}" rx="2" ry="1.5" fill="rgba(255,255,255,0.18)"/>`,
+
+    pepper: (x, y) =>
+      `<path d="M${x},${y-8} C${x-5},${y-4} ${x-6},${y+6} ${x},${y+9} C${x+6},${y+6} ${x+5},${y-4} ${x},${y-8}Z" fill="#E64A19"/>
+       <line x1="${x}" y1="${y-8}" x2="${x}" y2="${y-12}" stroke="#388E3C" stroke-width="1.5" stroke-linecap="round"/>`,
+
+    cucumber: (x, y) =>
+      `<ellipse cx="${x}" cy="${y+3}" rx="4.5" ry="9" fill="#43A047"/>
+       <ellipse cx="${x-1}" cy="${y-2}" rx="1.5" ry="3.5" fill="#81C784" opacity="0.5"/>
+       <circle cx="${x}" cy="${y+10}" r="2.2" fill="#FDD835"/>`,
+
+    eggplant: (x, y) =>
+      `<ellipse cx="${x}" cy="${y+4}" rx="6" ry="9" fill="#6A1B9A"/>
+       <path d="M${x-3},${y-4} Q${x},${y-8} ${x+3},${y-4} Q${x},${y-6} ${x-3},${y-4}Z" fill="#4CAF50"/>
+       <ellipse cx="${x-2}" cy="${y}" rx="1.8" ry="3" fill="rgba(255,255,255,0.12)"/>`,
+
+    cabbage: (x, y) =>
+      `<circle cx="${x}" cy="${y}" r="10" fill="#2E7D32"/>
+       <circle cx="${x}" cy="${y}" r="7" fill="#43A047"/>
+       <circle cx="${x}" cy="${y}" r="4" fill="#81C784"/>
+       <ellipse cx="${x-2}" cy="${y-2}" rx="2.5" ry="2" fill="rgba(255,255,255,0.18)"/>`,
+
+    basil: (x, y) =>
+      `<ellipse cx="${x}" cy="${y-2}" rx="5.5" ry="8" fill="#338A3E"/>
+       <circle cx="${x}" cy="${y-10}" r="3.5" fill="#FFFFFF" opacity="0.92"/>
+       <circle cx="${x}" cy="${y-10}" r="1.8" fill="#F0F0F0"/>`,
+
+    zucchini: (x, y) =>
+      `<ellipse cx="${x+2}" cy="${y+3}" rx="4" ry="9" fill="#558B2F" transform="rotate(12 ${x+2} ${y+3})"/>
+       <ellipse cx="${x+2}" cy="${y+3}" rx="1.5" ry="7" fill="#7CB342" opacity="0.5" transform="rotate(12 ${x+2} ${y+3})"/>
+       <circle cx="${x-4}" cy="${y-5}" r="2.8" fill="#F9A825"/>`,
+
+    carrot: (x, y) =>
+      `<line x1="${x-4}" y1="${y-4}" x2="${x-6}" y2="${y-14}" stroke="#4CAF50" stroke-width="2" stroke-linecap="round"/>
+       <line x1="${x}" y1="${y-4}" x2="${x}" y2="${y-15}" stroke="#43A047" stroke-width="2.2" stroke-linecap="round"/>
+       <line x1="${x+4}" y1="${y-4}" x2="${x+6}" y2="${y-14}" stroke="#388E3C" stroke-width="2" stroke-linecap="round"/>`,
+
+    beet: (x, y) =>
+      `<ellipse cx="${x}" cy="${y+3}" rx="7.5" ry="7" fill="#880E4F"/>
+       <ellipse cx="${x-2}" cy="${y}" rx="2.5" ry="2" fill="rgba(255,255,255,0.12)"/>
+       <line x1="${x}" y1="${y-4}" x2="${x-3}" y2="${y-12}" stroke="#4CAF50" stroke-width="2" stroke-linecap="round"/>
+       <line x1="${x}" y1="${y-4}" x2="${x+3}" y2="${y-12}" stroke="#43A047" stroke-width="2" stroke-linecap="round"/>`,
+
+    onion: (x, y) =>
+      `<ellipse cx="${x}" cy="${y+5}" rx="7" ry="6" fill="#F57F17"/>
+       <path d="M${x-7},${y+5} Q${x-4},${y-1} ${x},${y-1} Q${x+4},${y-1} ${x+7},${y+5}" fill="#FDD835"/>
+       <line x1="${x-2}" y1="${y-1}" x2="${x-4}" y2="${y-11}" stroke="#4CAF50" stroke-width="2" stroke-linecap="round"/>
+       <line x1="${x+2}" y1="${y-1}" x2="${x+4}" y2="${y-11}" stroke="#43A047" stroke-width="2" stroke-linecap="round"/>`,
+
+    radish: (x, y) =>
+      `<circle cx="${x}" cy="${y+2}" r="7.5" fill="#E53935"/>
+       <path d="M${x-7},${y+5} Q${x-3},${y+10} ${x},${y+10} Q${x+3},${y+10} ${x+7},${y+5}Z" fill="#FAFAFA"/>
+       <line x1="${x}" y1="${y+10}" x2="${x}" y2="${y+13}" stroke="#E53935" stroke-width="1.5" stroke-linecap="round"/>
+       <ellipse cx="${x-2}" cy="${y-1}" rx="2" ry="1.5" fill="rgba(255,255,255,0.20)"/>`,
+
+    lettuce: (x, y) =>
+      `<circle cx="${x}" cy="${y}" r="11" fill="#AED581"/>
+       <circle cx="${x}" cy="${y}" r="7.5" fill="#C5E1A5"/>
+       <path d="M${x-11},${y+2} C${x-7},${y-5} ${x-3},${y-6} ${x},${y+2} C${x+3},${y-6} ${x+7},${y-5} ${x+11},${y+2}" stroke="#66BB6A" stroke-width="1.5" fill="none" stroke-linecap="round"/>`,
+
+    dill: (x, y) =>
+      `<circle cx="${x}" cy="${y}" r="7.5" fill="#FDD835"/>
+       <circle cx="${x-5}" cy="${y+6}" r="4" fill="#81C784"/>
+       <circle cx="${x+5}" cy="${y+6}" r="4" fill="#81C784"/>
+       <circle cx="${x}" cy="${y+9}" r="3.5" fill="#A5D6A7"/>`,
+
+    parsley: (x, y) =>
+      `<ellipse cx="${x}" cy="${y}" rx="8" ry="10" fill="#2E7D32"/>
+       <ellipse cx="${x-6}" cy="${y+5}" rx="5.5" ry="7" fill="#388E3C" transform="rotate(-20 ${x-6} ${y+5})"/>
+       <ellipse cx="${x+6}" cy="${y+5}" rx="5.5" ry="7" fill="#388E3C" transform="rotate(20 ${x+6} ${y+5})"/>
+       <ellipse cx="${x-1}" cy="${y-4}" rx="2.5" ry="3" fill="#4CAF50" opacity="0.5"/>`,
+
+    strawberry: (x, y) =>
+      `<path d="M${x},${y+9} C${x-5},${y+5} ${x-6},${y-3} ${x-2},${y-5} C${x},${y-6} ${x+2},${y-5} ${x+6},${y-3} C${x+9},${y} ${x+5},${y+5} ${x},${y+9}Z" fill="#E53935"/>
+       <ellipse cx="${x-2}" cy="${y}" rx="2.5" ry="3.5" fill="rgba(255,255,255,0.18)"/>
+       <circle cx="${x-2}" cy="${y+5}" r="1" fill="#FDD835"/>
+       <circle cx="${x+2}" cy="${y+5}" r="1" fill="#FDD835"/>
+       <circle cx="${x}" cy="${y+2}" r="1" fill="#FDD835"/>
+       <path d="M${x-3},${y-5} Q${x},${y-9} ${x+3},${y-5} Q${x},${y-7} ${x-3},${y-5}Z" fill="#4CAF50"/>`,
+  };
+
+  const draw = fr[typeKey];
+  if (!draw) return '';
+  return draw(L[0], L[1]) + draw(R[0], R[1]);
+}
+
 /* Fixed: viewBox expanded so leaves are never clipped on any side */
 function buildPotSVG(plant, size = 92) {
   const v     = DB.getVariety(plant.typeKey, plant.varietyKey);
@@ -229,11 +325,8 @@ function plantSVG(stage, typeKey) {
     <path d="M16,-45 C22,-55 36,-51 33,-41 C30,-33 18,-43 16,-45Z"
           fill="#6CC668"/>`;
 
-  // Stage 3 — full plant with icon
-  const iconSvg = PLANT_ICONS[typeKey] || '';
-  const frElement = iconSvg
-    ? `<image x="-16" y="-90" width="32" height="32" href="${'data:image/svg+xml,' + encodeURIComponent(iconSvg)}"/>`
-    : `<text x="0" y="-74" text-anchor="middle" font-size="22">🌱</text>`;
+  // Stage 3 — full plant with inline fruits on branches
+  const fruits3 = stage3Fruits(typeKey);
   return `
     <line x1="0" y1="0" x2="0" y2="-62"
           stroke="#1A6622" stroke-width="3.2" stroke-linecap="round"/>
@@ -249,7 +342,145 @@ function plantSVG(stage, typeKey) {
     <line x1="0" y1="-43" x2="18" y2="-54" stroke="#2A7A30" stroke-width="2.2" stroke-linecap="round"/>
     <path d="M18,-54 C25,-65 40,-61 36,-51 C32,-42 20,-52 18,-54Z"
           fill="#4CA84C"/>
-    ${frElement}`;
+    ${fruits3}`;
+}
+
+// ── Weather API ───────────────────────────────────────────────────────────────
+const WEATHER_API_URL = 'https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.62' +
+  '&current=temperature_2m,relative_humidity_2m,wind_speed_10m,surface_pressure,weather_code,uv_index,apparent_temperature' +
+  '&daily=sunrise,sunset&hourly=temperature_2m,weather_code&timezone=Europe%2FMoscow&forecast_days=1';
+const WEATHER_CACHE_KEY = 'rassada_weather';
+const WEATHER_TTL_MS = 30 * 60 * 1000;
+
+function wmoIcon(code, isDay) {
+  if (code === 0)   return isDay ? '☀️' : '🌙';
+  if (code <= 2)    return isDay ? '🌤️' : '🌙';
+  if (code === 3)   return '☁️';
+  if (code <= 48)   return '🌫️';
+  if (code <= 55)   return '🌦️';
+  if (code <= 65)   return '🌧️';
+  if (code <= 77)   return '🌨️';
+  if (code <= 82)   return '🌦️';
+  return '⛈️';
+}
+
+function wmoDesc(code) {
+  if (code === 0)   return 'Ясно';
+  if (code === 1)   return 'Преим. ясно';
+  if (code === 2)   return 'Облачно';
+  if (code === 3)   return 'Пасмурно';
+  if (code <= 48)   return 'Туман';
+  if (code <= 55)   return 'Морось';
+  if (code <= 65)   return 'Дождь';
+  if (code <= 77)   return 'Снег';
+  if (code <= 82)   return 'Ливень';
+  return 'Гроза';
+}
+
+function fmtHhmm(isoStr) {
+  return new Date(isoStr).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+}
+
+function applyWeather(data) {
+  const cur    = data.current;
+  const hourly = data.hourly;
+  const daily  = data.daily;
+  const now    = new Date();
+  const sunrise = new Date(daily.sunrise[0]);
+  const sunset  = new Date(daily.sunset[0]);
+  const isDay   = now >= sunrise && now <= sunset;
+
+  // Sidebar
+  const sT = document.getElementById('sidebarTemp');
+  const sH = document.getElementById('sidebarHumidity');
+  if (sT) sT.textContent = Math.round(cur.temperature_2m) + '°C';
+  if (sH) sH.textContent = Math.round(cur.relative_humidity_2m) + '%';
+
+  // Eyebrow
+  const eyebrow = document.getElementById('weatherEyebrow');
+  if (eyebrow) eyebrow.textContent = (isDay ? '☀️' : '🌙') + ' Погода сейчас · Москва';
+
+  // Main
+  const tEl = document.getElementById('weatherTemp');
+  const dEl = document.getElementById('weatherDesc');
+  const fEl = document.getElementById('weatherFeels');
+  if (tEl) tEl.textContent = Math.round(cur.temperature_2m) + '°C';
+  if (dEl) dEl.textContent = wmoDesc(cur.weather_code);
+  if (fEl) fEl.textContent = `Ощущается как ${Math.round(cur.apparent_temperature)}°C`;
+
+  // Stats
+  const hEl = document.getElementById('weatherHumidity');
+  const wEl = document.getElementById('weatherWind');
+  const pEl = document.getElementById('weatherPressure');
+  const uEl = document.getElementById('weatherUV');
+  if (hEl) hEl.textContent = Math.round(cur.relative_humidity_2m) + '%';
+  if (wEl) wEl.textContent = Math.round(cur.wind_speed_10m) + ' км/ч';
+  if (pEl) pEl.textContent = Math.round(cur.surface_pressure * 0.75006) + ' мм';
+  if (uEl) {
+    const uv = Math.round(cur.uv_index);
+    const uvLabel = uv === 0
+      ? (isDay ? '0 Низкий' : '0 Ночь')
+      : uv <= 2 ? `${uv} Низкий`
+      : uv <= 5 ? `${uv} Умеренный`
+      : uv <= 7 ? `${uv} Высокий`
+      : `${uv} Опасный`;
+    uEl.textContent = uvLabel;
+  }
+
+  // Hourly — next 5 slots from now
+  const hRow = document.getElementById('weatherHourly');
+  if (hRow && hourly.time) {
+    const startIdx = hourly.time.findIndex(t => new Date(t) >= now);
+    const from = startIdx < 0 ? 0 : startIdx;
+    const items = [];
+    for (let i = 0; i < 5; i++) {
+      const idx = from + i;
+      if (idx >= hourly.time.length) break;
+      const t    = new Date(hourly.time[idx]);
+      const tDay = t >= sunrise && t <= sunset;
+      items.push(`<div class="hourly-item">
+        <div class="hr-time">${i === 0 ? 'Сейчас' : fmtHhmm(hourly.time[idx])}</div>
+        <div class="hr-icon">${wmoIcon(hourly.weather_code[idx], tDay)}</div>
+        <div class="hr-temp">${Math.round(hourly.temperature_2m[idx])}°C</div>
+      </div>`);
+    }
+    hRow.innerHTML = items.join('');
+  }
+
+  // Daylight panel
+  const deEl = document.getElementById('daylightEyebrow');
+  const srEl = document.getElementById('daylightSunrise');
+  const drEl = document.getElementById('daylightDuration');
+  const ssEl = document.getElementById('daylightSunset');
+  if (deEl) {
+    const dateStr = sunrise.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }).replace(' г.', '');
+    deEl.textContent = `🌅 Световой день · ${dateStr}`;
+  }
+  if (srEl) srEl.textContent = fmtHhmm(daily.sunrise[0]);
+  if (ssEl) ssEl.textContent = fmtHhmm(daily.sunset[0]);
+  if (drEl) {
+    const ms  = sunset - sunrise;
+    const h   = Math.floor(ms / 3_600_000);
+    const min = Math.round((ms % 3_600_000) / 60_000);
+    drEl.textContent = `${h} ч ${min} мин`;
+  }
+}
+
+async function fetchWeather() {
+  try {
+    const cached = localStorage.getItem(WEATHER_CACHE_KEY);
+    if (cached) {
+      const { ts, data } = JSON.parse(cached);
+      if (Date.now() - ts < WEATHER_TTL_MS) { applyWeather(data); return; }
+    }
+  } catch (_) {}
+  try {
+    const res  = await fetch(WEATHER_API_URL);
+    if (!res.ok) return;
+    const data = await res.json();
+    localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+    applyWeather(data);
+  } catch (_) { /* keep hardcoded fallback on network error */ }
 }
 
 // ── Sky scene ─────────────────────────────────────────────────────────────────
@@ -958,10 +1189,14 @@ function init() {
   buildSky();
   updateDateTime();
   rotateTip();
+  fetchWeather();
   renderPlantsSection();
   renderStats();
   renderRemindersList();
   renderNotifPanel();
+
+  // Refresh weather every 30 min
+  setInterval(fetchWeather, WEATHER_TTL_MS);
 
   // Auto-refresh every 60 s
   setInterval(() => {
