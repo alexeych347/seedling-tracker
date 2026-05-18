@@ -729,7 +729,7 @@ function renderPlantsSection() {
 // ── Stats bar ─────────────────────────────────────────────────────────────────
 function renderStats() {
   const count = State.plants.length;
-  document.getElementById('statPlantCount').textContent = `${count} из 12`;
+  document.getElementById('statPlantCount').textContent = `${count} из ${DB.getAllTypes().length}`;
 
   // Overall progress = avg stage progress across all plants
   if (count === 0) {
@@ -876,6 +876,14 @@ const PAGE_MAP = {
   settings: 'pageSettings',
 };
 
+const PAGE_TITLES = {
+  overview: 'Обзор',
+  plants:   'Растения',
+  care:     'Уход',
+  library:  'Библиотека',
+  settings: 'Настройки',
+};
+
 function navigateTo(page) {
   if (State.view === 'detail') return; // stay in detail if open
 
@@ -889,6 +897,10 @@ function navigateTo(page) {
     const el = document.getElementById(id);
     if (el) el.classList.toggle('hidden', key !== page);
   });
+
+  // Update header page title
+  const titleEl = document.getElementById('headerPageTitle');
+  if (titleEl) titleEl.textContent = PAGE_TITLES[page] ?? page;
 
   State.currentPage = page;
 

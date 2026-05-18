@@ -11,7 +11,7 @@
 :root {
   /* Sidebar */
   --sb-bg:         rgba(22, 56, 32, 0.97);
-  --sb-w:          188px;
+  --sb-w:          212px;
   --sb-item-hover: rgba(255,255,255,0.08);
   --sb-item-act:   rgba(255,255,255,0.16);
   --sb-border:     rgba(255,255,255,0.10);
@@ -258,11 +258,10 @@ button { cursor: pointer; font-family: var(--font); }
   border-bottom: 1px solid rgba(0,0,0,0.08);
   z-index: 15;
 }
-.header-left { display: flex; align-items: center; gap: 10px; }
-.header-left .brand-mark { width: 28px; height: 28px; border-radius: 8px; }
+.header-left { display: flex; align-items: center; }
 .header-title {
   font-size: 1.05rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--text-main);
   letter-spacing: -0.01em;
 }
@@ -840,7 +839,15 @@ button { cursor: pointer; font-family: var(--font); }
   gap: 10px;
   flex: 1;
 }
-.stat-icon { font-size: 1.05rem; }
+.stat-icon {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+}
+.stat-icon--green { background: linear-gradient(135deg, #3a8f50, #56b870); }
+.stat-icon--blue  { background: linear-gradient(135deg, #3478b5, #4a9fd4); }
 .stat-body { flex: 1; min-width: 0; }
 .stat-label { font-size: 0.62rem; color: rgba(26,36,52,0.48); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
 .stat-value { font-size: 0.88rem; font-weight: 700; color: var(--text-main); }
