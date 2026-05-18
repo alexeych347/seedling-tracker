@@ -740,6 +740,8 @@ button { cursor: pointer; font-family: var(--font); }
   background: linear-gradient(180deg, rgba(255,248,235,0.96) 0%, rgba(235,215,175,0.92) 100%);
   border-bottom: 1px solid rgba(195,160,95,0.28);
   flex-shrink: 0;
+  position: relative;
+  z-index: 10;
 }
 .btn-add-plant {
   display: flex;
