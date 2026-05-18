@@ -681,8 +681,7 @@ function renderPlantsSection() {
     const stage = currentStage(plant);
 
     slot.innerHTML = `
-      <!-- Info card (normal flow — no clipping) -->
-      <div class="plant-info-card">
+      <div class="plant-card">
         <div class="pic-header">
           <div class="pic-name">${type.name}</div>
           <div class="pic-dot ${ws}"></div>
@@ -695,19 +694,8 @@ function renderPlantsSection() {
           <span class="pic-wlabel">${pct}%</span>
         </div>
         <div class="pic-next">💧 ${nextWater}</div>
-      </div>
-
-      <!-- Display: water bar + pot -->
-      <div class="plant-display">
-        <div class="water-bar-wrap">
-          <div class="water-bar-track">
-            <div class="water-bar-fill ${ws}" style="height:${pct}%"></div>
-          </div>
-          <span class="water-bar-pct">${pct}%</span>
-        </div>
-        <div class="pot-wrap-soil">
-          ${buildPotSVG(plant, 86)}
-          ${buildRootSVG(86)}
+        <div class="pc-pot-zone">
+          ${buildPotSVG(plant, 104)}
         </div>
       </div>`;
 

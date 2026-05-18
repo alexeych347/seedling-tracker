@@ -540,7 +540,7 @@ button { cursor: pointer; font-family: var(--font); }
 
 /* ── Plants section (windowsill) ────────────────────────────────────────── */
 .plants-section {
-  height: 420px;
+  height: 360px;
   flex-shrink: 0;
   position: relative;
   background: linear-gradient(180deg,
@@ -598,8 +598,8 @@ button { cursor: pointer; font-family: var(--font); }
   left: 0; right: 0;
   display: flex;
   align-items: flex-end;
-  gap: 20px;
-  padding: 0 24px 6px;
+  gap: 16px;
+  padding: 0 24px 10px;
   overflow-x: auto;
   overflow-y: visible;
   scrollbar-width: thin;
@@ -619,22 +619,25 @@ button { cursor: pointer; font-family: var(--font); }
   cursor: pointer;
 }
 
-/* Info card above plant — normal flow (not absolute), clipping fixed */
-.plant-info-card {
-  width: 152px;
+/* Unified plant card: info + pot */
+.plant-card {
+  width: 172px;
   background: rgba(255,255,255,0.93);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255,255,255,0.65);
-  border-radius: var(--r-sm);
-  padding: 9px 11px 8px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.20);
+  border-radius: 14px;
+  padding: 11px 12px 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
   pointer-events: none;
-  margin-bottom: 10px;
-  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s;
 }
-.plant-slot:hover .plant-info-card {
-  box-shadow: 0 8px 24px rgba(0,0,0,0.30);
+.plant-slot:hover .plant-card {
+  transform: translateY(-8px);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.28);
   border-color: rgba(255,255,255,0.9);
 }
 .pic-header {
@@ -701,62 +704,18 @@ button { cursor: pointer; font-family: var(--font); }
   text-overflow: ellipsis;
 }
 
-/* Water bar beside plant */
-.plant-display {
+/* Pot zone inside plant card */
+.pc-pot-zone {
   display: flex;
+  justify-content: center;
   align-items: flex-end;
-  gap: 6px;
-}
-.water-bar-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding-bottom: 8px;
-}
-.water-bar-track {
-  width: 8px;
-  height: 72px;
-  background: rgba(0,0,0,0.12);
-  border-radius: var(--r-pill);
-  position: relative;
-  overflow: hidden;
-}
-.water-bar-fill {
-  position: absolute;
-  bottom: 0;
-  left: 0; right: 0;
-  border-radius: var(--r-pill);
-  transition: height 0.6s var(--ease), background 0.4s;
-}
-.water-bar-fill.ok   { background: linear-gradient(180deg, #60C8FF, #1E88E5); }
-.water-bar-fill.warn { background: linear-gradient(180deg, #FFCA42, #FF8C00); }
-.water-bar-fill.bad  { background: linear-gradient(180deg, #FF6B6B, #D32F2F); }
-.water-bar-pct {
-  font-size: 0.58rem;
-  font-weight: 700;
-  color: rgba(26,36,52,0.60);
+  margin-top: 8px;
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,0.20));
 }
 
-/* Pot wrap on windowsill */
-.pot-wrap-soil {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  transform-origin: bottom center;
-  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), filter 0.22s;
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.25));
-}
-.plant-slot:hover .pot-wrap-soil { transform: translateY(-8px) scale(1.04); filter: drop-shadow(0 14px 24px rgba(0,0,0,0.30)); }
 .plant-slot.dimmed {
   filter: blur(1px) brightness(0.55);
   pointer-events: none;
-}
-
-/* Root SVG below pot — hidden in light/windowsill theme */
-.root-svg {
-  display: none;
 }
 
 /* Add plant button */
@@ -766,8 +725,8 @@ button { cursor: pointer; font-family: var(--font); }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 90px;
-  height: 120px;
+  width: 172px;
+  min-height: 280px;
   border: 2px dashed rgba(0,0,0,0.22);
   border-radius: var(--r-md);
   background: rgba(255,255,255,0.28);
@@ -1679,7 +1638,7 @@ button { cursor: pointer; font-family: var(--font); }
   .glass-panel { flex-shrink: 0; width: 240px; }
 
   /* Plants section: shorter on mobile */
-  .plants-section { height: 260px; }
+  .plants-section { height: 230px; }
 
   /* Stats bar: wraps */
   .stats-bar { height: auto; flex-wrap: wrap; padding: 8px 12px; gap: 6px; }
