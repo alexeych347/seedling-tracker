@@ -355,10 +355,29 @@ function plantSVG(stage, typeKey) {
     ${fruits3}`;
 }
 
+// ── Location ──────────────────────────────────────────────────────────────────
+const LOCATION_KEY    = 'rassada_location';
+const DEFAULT_LOCATION = { name: 'Москва', latitude: 55.75, longitude: 37.62 };
+
+function getLocation() {
+  try {
+    const saved = localStorage.getItem(LOCATION_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch (_) {}
+  return DEFAULT_LOCATION;
+}
+
+function saveLocation(loc) {
+  localStorage.setItem(LOCATION_KEY, JSON.stringify(loc));
+}
+
 // ── Weather API ───────────────────────────────────────────────────────────────
-const WEATHER_API_URL = 'https://api.open-meteo.com/v1/forecast?latitude=55.75&longitude=37.62' +
-  '&current=temperature_2m,relative_humidity_2m,wind_speed_10m,surface_pressure,weather_code,uv_index,apparent_temperature' +
-  '&daily=sunrise,sunset,weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=Europe%2FMoscow&forecast_days=7';
+function buildWeatherURL(lat, lon) {
+  return `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+    '&current=temperature_2m,relative_humidity_2m,wind_speed_10m,surface_pressure,weather_code,uv_index,apparent_temperature' +
+    '&daily=sunrise,sunset,weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&timezone=auto&forecast_days=7';
+}
+
 const WEATHER_CACHE_KEY = 'rassada_weather_v2';
 const WeatherState = { temp: null, humidity: null, uvIndex: 0, weatherCode: 0, isDay: false };
 const WEATHER_TTL_MS = 30 * 60 * 1000;
@@ -426,7 +445,7 @@ function applyWeather(data) {
 
   // Eyebrow
   const eyebrow = document.getElementById('weatherEyebrow');
-  if (eyebrow) eyebrow.textContent = (isDay ? '☀️' : '🌙') + ' Погода сейчас · Москва';
+  if (eyebrow) eyebrow.textContent = (isDay ? '☀️' : '🌙') + ' Погода сейчас · ' + getLocation().name;
 
   // Main
   const tEl = document.getElementById('weatherTemp');
@@ -534,21 +553,22 @@ function applyWeather(data) {
   }
 }
 
-async function fetchWeather() {
+async function fetchWeather(forceRefresh = false) {
+  const loc = getLocation();
   try {
     const cached = localStorage.getItem(WEATHER_CACHE_KEY);
-    if (cached) {
-      const { ts, data } = JSON.parse(cached);
-      if (Date.now() - ts < WEATHER_TTL_MS) { applyWeather(data); return; }
+    if (!forceRefresh && cached) {
+      const { ts, data, locName } = JSON.parse(cached);
+      if (Date.now() - ts < WEATHER_TTL_MS && locName === loc.name) { applyWeather(data); return; }
     }
   } catch (_) {}
   try {
-    const res  = await fetch(WEATHER_API_URL);
+    const res  = await fetch(buildWeatherURL(loc.latitude, loc.longitude));
     if (!res.ok) return;
     const data = await res.json();
-    localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+    localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data, locName: loc.name }));
     applyWeather(data);
-  } catch (_) { /* keep hardcoded fallback on network error */ }
+  } catch (_) {}
 }
 
 // ── Sky scene ─────────────────────────────────────────────────────────────────
@@ -1348,6 +1368,58 @@ function closeNotifPanel() {
   State.notifOpen = false;
 }
 
+// ── City search (geocoding) ───────────────────────────────────────────────────
+async function searchCity(query) {
+  const btn = document.getElementById('citySearchBtn');
+  const resultsEl = document.getElementById('cityResults');
+  if (!query.trim()) return;
+
+  btn.textContent = '…';
+  btn.disabled = true;
+
+  try {
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=ru&format=json`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error();
+    const json = await res.json();
+    const results = json.results || [];
+
+    if (!results.length) {
+      resultsEl.innerHTML = '<div class="city-result-empty">Город не найден</div>';
+      resultsEl.classList.remove('hidden');
+      return;
+    }
+
+    resultsEl.innerHTML = results.map(r => {
+      const sub = [r.admin1, r.country].filter(Boolean).join(', ');
+      return `<button class="city-result-item" data-lat="${r.latitude}" data-lon="${r.longitude}" data-name="${r.name}">
+        <span class="city-result-name">${r.name}</span>
+        <span class="city-result-sub">${sub}</span>
+      </button>`;
+    }).join('');
+    resultsEl.classList.remove('hidden');
+  } catch (_) {
+    resultsEl.innerHTML = '<div class="city-result-empty">Ошибка поиска — проверьте соединение</div>';
+    resultsEl.classList.remove('hidden');
+  } finally {
+    btn.textContent = 'Найти';
+    btn.disabled = false;
+  }
+}
+
+function selectCity(name, lat, lon) {
+  saveLocation({ name, latitude: parseFloat(lat), longitude: parseFloat(lon) });
+  document.getElementById('currentCityLabel').textContent = name;
+  document.getElementById('cityInput').value = '';
+  document.getElementById('cityResults').classList.add('hidden');
+  fetchWeather(true);
+}
+
+function renderSettingsCity() {
+  const label = document.getElementById('currentCityLabel');
+  if (label) label.textContent = getLocation().name;
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 function init() {
   loadState();
@@ -1503,6 +1575,22 @@ function init() {
   document.getElementById('careContent').addEventListener('click', e => {
     const btn = e.target.closest('.care-water-btn');
     if (btn) waterPlant(btn.dataset.plantId);
+  });
+
+  // ── Settings: city search ──
+  renderSettingsCity();
+
+  document.getElementById('citySearchBtn').addEventListener('click', () => {
+    searchCity(document.getElementById('cityInput').value);
+  });
+
+  document.getElementById('cityInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') searchCity(e.target.value);
+  });
+
+  document.getElementById('cityResults').addEventListener('click', e => {
+    const item = e.target.closest('[data-lat]');
+    if (item) selectCity(item.dataset.name, item.dataset.lat, item.dataset.lon);
   });
 
   // ── Settings ──

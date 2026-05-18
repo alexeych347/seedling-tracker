@@ -330,6 +330,21 @@
       <h2 class="page-title">Настройки</h2>
     </div>
     <div class="settings-content">
+      <div class="settings-group-label">Местоположение</div>
+      <div class="settings-section">
+        <div class="settings-item settings-item--column">
+          <div class="settings-item-left">
+            <div class="settings-item-title">Город для погоды</div>
+            <div class="settings-item-sub">Сейчас: <span id="currentCityLabel">Москва</span></div>
+          </div>
+          <div class="city-search-row">
+            <input class="city-input" id="cityInput" type="text" placeholder="Введите название города…" autocomplete="off">
+            <button class="settings-btn" id="citySearchBtn">Найти</button>
+          </div>
+          <div class="city-results hidden" id="cityResults"></div>
+        </div>
+      </div>
+
       <div class="settings-group-label">Данные</div>
       <div class="settings-section">
         <div class="settings-item">
