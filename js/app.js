@@ -205,6 +205,8 @@ function plantSVG(stage, typeKey) {
   const FRUITS = {
     tomato: '🍅', cucumber: '🥒', pepper: '🌶️',
     basil: '🌿', eggplant: '🍆', cabbage: '🥬', zucchini: '🥒',
+    carrot: '🥕', beet: '🟣', onion: '🧅', radish: '🌱',
+    lettuce: '🥗', dill: '🌿', parsley: '🪴', strawberry: '🍓',
   };
 
   if (stage === 0) return '';

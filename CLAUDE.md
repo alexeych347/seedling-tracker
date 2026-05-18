@@ -22,7 +22,7 @@ There are no tests, no package manager, and no dev server. All changes are visib
 
 Three files, no framework, no bundler:
 
-- **`js/database.js`** — pure data, loaded first. Defines the global `DB` object with care data for 9 plant types (33 varieties). Each variety has `waterIntervalDays`, `stageDays[]`, `stageAdvice[]`, `stages[]`, and display metadata. Three helpers are attached directly to `DB`: `getVariety(typeKey, varietyKey)`, `getVarietyList(typeKey)`, `getAllTypes()`.
+- **`js/database.js`** — pure data, loaded first. Defines the global `DB` object with care data for 12 plant types (48 varieties). Each variety has `waterIntervalDays`, `stageDays[]`, `stageAdvice[]`, `stages[]`, and display metadata. Three helpers are attached directly to `DB`: `getVariety(typeKey, varietyKey)`, `getVarietyList(typeKey)`, `getAllTypes()`.
 
 - **`js/app.js`** — all logic and rendering, loaded after `database.js`. Single `State` object is the source of truth. No virtual DOM — every render function writes directly to `innerHTML`. Page navigation works by toggling `.hidden` on page `<div>`s (see `PAGE_MAP`). `localStorage` keys: `rassada_v3` (plants), `rassada_reminders` (user reminders).
 
