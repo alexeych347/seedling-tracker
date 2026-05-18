@@ -230,11 +230,11 @@ function buildPotSVG(plant, size = 92) {
   const stage = currentStage(plant);
   const uid   = `pt${plant.id}`;
 
-  // viewBox: left-8 top-50 width116 height198 — gives 8px horizontal clearance
-  // and 50px vertical headroom so even stage-3 leaves/emoji don't clip
-  const vb = '-8 -50 116 200';
+  // viewBox: left-8 top-50 width116 height208 — 50px headroom for tall stage-3 plants,
+  // 8px extra at bottom so the pot shadow ellipse (cy=147 ry=5.5 → y=152.5) is never clipped
+  const vb = '-8 -50 116 208';
   const w  = size;
-  const h  = Math.round(size * (200 / 116));
+  const h  = Math.round(size * (208 / 116));
 
   return `<svg viewBox="${vb}" width="${w}" height="${h}"
     xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

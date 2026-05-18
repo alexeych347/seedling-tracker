@@ -1724,9 +1724,11 @@ button { cursor: pointer; font-family: var(--font); }
   .reminder-time  { font-size: 0.59rem; }
   .btn-add-reminder { padding: 6px 10px; font-size: 0.69rem; }
 
-  /* ── Подоконник: flex-shrink:0 гарантирует полную высоту на любом экране ── */
-  .plants-section  { height: 280px; flex-shrink: 0; }
-  .soil-plants-row { height: 280px; gap: 10px; padding: 8px 14px; }
+  /* ── Подоконник: flex-shrink:0 гарантирует полную высоту на любом экране.
+     Padding снизу 24px — тени горшков (drop-shadow 8px+14px blur = 22px)
+     полностью вмещаются, нижняя часть горшка не обрезается. ── */
+  .plants-section  { height: 300px; flex-shrink: 0; }
+  .soil-plants-row { height: 300px; gap: 10px; padding: 8px 14px 24px; }
   .plant-card { width: 148px; padding: 8px 10px 9px; }
   .pc-pot-zone svg { transform: scale(0.93); transform-origin: bottom center; }
 
