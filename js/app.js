@@ -438,12 +438,8 @@ function applyWeather(data) {
 
   // Stats
   const hEl = document.getElementById('weatherHumidity');
-  const wEl = document.getElementById('weatherWind');
-  const pEl = document.getElementById('weatherPressure');
   const uEl = document.getElementById('weatherUV');
   if (hEl) hEl.textContent = Math.round(cur.relative_humidity_2m) + '%';
-  if (wEl) wEl.textContent = Math.round(cur.wind_speed_10m) + ' км/ч';
-  if (pEl) pEl.textContent = Math.round(cur.surface_pressure * 0.75006) + ' мм';
   if (uEl) {
     const uv = Math.round(cur.uv_index);
     const uvLabel = uv === 0
@@ -461,7 +457,7 @@ function applyWeather(data) {
     const startIdx = hourly.time.findIndex(t => new Date(t) >= now);
     const from = startIdx < 0 ? 0 : startIdx;
     const items = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
       const idx = from + i;
       if (idx >= hourly.time.length) break;
       const t    = new Date(hourly.time[idx]);
