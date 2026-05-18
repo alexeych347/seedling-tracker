@@ -724,17 +724,6 @@ function renderPlantsSection() {
     row.appendChild(slot);
   });
 
-  // Add-plant button
-  const addBtn = document.createElement('div');
-  addBtn.className = 'add-plant-btn';
-  addBtn.innerHTML = `
-    <svg fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" viewBox="0 0 24 24">
-      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-    </svg>
-    <span class="add-plant-label">Добавить<br>растение</span>`;
-  addBtn.addEventListener('click', openModal);
-  row.appendChild(addBtn);
-
   document.getElementById('emptyHint').classList.toggle('hidden', State.plants.length > 0);
 }
 
@@ -1265,6 +1254,9 @@ function init() {
     const btn = e.target.closest('[data-page]');
     if (btn) { navigateTo(btn.dataset.page); closeMobileSidebar(); }
   });
+
+  // ── Add plant button ──
+  document.getElementById('addPlantBtnHeader').addEventListener('click', openModal);
 
   // ── Hamburger (mobile) ──
   document.getElementById('hamburgerBtn').addEventListener('click', () => {
