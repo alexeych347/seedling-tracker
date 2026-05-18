@@ -103,8 +103,11 @@ function nextWaterLabel(plant) {
   if (ws === 'bad') return 'Сейчас!';
   const h = hoursUntilWater(plant);
   if (h < 1)  return 'Меньше часа';
-  if (h < 24) return `Сегодня, через ${h} ч`;
+  if (h < 24) return `Через ${h} ч`;
   const d = Math.floor(h / 24);
+  const rem = Math.round(h % 24);
+  if (d === 1 && rem < 2) return 'Завтра';
+  if (rem >= 2) return `Через ${d} д ${rem} ч`;
   return `Через ${d} дн`;
 }
 
